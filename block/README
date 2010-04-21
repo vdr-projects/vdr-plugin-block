@@ -1,0 +1,49 @@
+This is a "plugin" for the Video Disk Recorder (VDR).
+
+The block plugin is a fork of the orphaned taste plugin 0.0.2d which was
+originally coded by LordJaxom aka Sascha Volkenandt.
+Please do not install both plugins (taste AND block)!
+Apart from that this probably won't work it simply does not make any sense
+at all ;).
+
+Contact information (block plugin):
+Developer/Maintainer: Michael Schneider <vdrportal_midas at gmx dot de>
+Project homepage: http://projects.vdr-developer.org/projects/plg-block/news
+
+
+Contact information (taste plugin):
+Written by: Sascha Volkenandt <sascha at akv-soft dot de>
+Project homepage: http://www.magoa.net/linux/index.php?view=taste
+
+See the file COPYING for license information.
+
+Description:
+
+This plugin prevents you from being bothered by unwanted broadcasts. Instead
+of those the screen will stay black, the sound muted, an info message
+appears in the OSD and after a configurable pause the vdr switches to
+another channel.
+
+Unwanted shows are identified by their EPG title in a predefined blacklist.
+You can add the current title to the block plugin blacklist by choosing
+'Block Broadcast' from the main VDR menu or by editing the blacklist in the
+setup of the plugin. In the latter case make sure you close the submenus as
+well as the setup menu by 'ok' to properly save your changes. This would
+also be the right place to remove entries from the blacklist.
+
+Every time the VDR switches to another channel the block plugin checks if
+the EPG title of the current show matches with a blacklist entry and if so
+the show won't be displayed and after a configurable pause (default 2s) the
+VDR switches to another channel automatically. Usually this will be the next
+possible lower channel number if you were coming from a higher one or
+vice-versa. If this is not possible, the vdr switches to the last channel
+displayed. Of course you can zap to another channel yourself as well.
+
+In case you unexpectedly want to watch a blacklisted show you can override
+the block rule by pressing 'Ok' while the message is displayed.
+
+For VDR versions <= 1.3.16 you will have to apply the included patch to the
+VDR source in order to have multiple channels being blocked in a row.
+Otherwise the block plugin will only skip the first channel. The patch
+originates from the taste plugin and was written by Sascha Volkenandt.
+
