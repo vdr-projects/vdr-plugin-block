@@ -17,9 +17,9 @@
 #include "config.h"
 #include "i18n.h"
 
-static const char *VERSION        = "0.0.1b";
-static const char *DESCRIPTION    = trNOOP("Lock unwanted shows by keywords");
-static const char *MAINMENUENTRY  = trNOOP("Schedule not acceptable");
+static const char *VERSION        = "0.0.1b+bf1";
+static const char *DESCRIPTION    = trNOOP("Block unwanted shows by EPG title");
+static const char *MAINMENUENTRY  = trNOOP("Block broadcast");
 
 class cPluginBlock : public cPlugin {
 private:
