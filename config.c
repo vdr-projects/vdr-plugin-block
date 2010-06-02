@@ -14,7 +14,8 @@ cSetupBlock SetupBlock;
 
 cSetupBlock::cSetupBlock(void):
 	HideMenuEntry(0),
-	MessageTimeout(2)
+	MessageTimeout(2),
+	DetectionMethod(0)
 {
 }
 
@@ -22,6 +23,7 @@ bool cSetupBlock::Parse(const char *Name, const char *Value)
 {
   if (strcmp(Name, "HideMenuEntry")  == 0) HideMenuEntry  = atoi(Value);
   else if (strcmp(Name, "MessageTimeout") == 0) MessageTimeout = atoi(Value);
+  else if (strcmp(Name, "DetectionMethod") == 0) DetectionMethod = atoi(Value);
   else return false;
   return true;
 }

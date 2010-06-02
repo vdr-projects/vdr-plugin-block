@@ -17,6 +17,7 @@ class cMenuSetupBlock : public cMenuSetupPage {
 private:
   cEventsBlock mEventsData;
   cSetupBlock  mSetupData;
+  const char *DetectionMethods[2];
 
 protected:
   virtual void Store(void);

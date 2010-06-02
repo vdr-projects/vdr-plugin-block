@@ -16,14 +16,20 @@
 #include "setup.h"
 #include "config.h"
 #include "i18n.h"
+#include "control.h"
 
-static const char *VERSION        = "0.0.1b+bf1";
+static const char *VERSION        = "0.0.2rc1";
 static const char *DESCRIPTION    = trNOOP("Block unwanted shows by EPG title");
 static const char *MAINMENUENTRY  = trNOOP("Block broadcast");
+
+static int channelnumber=0;
+static char *temptitle=NULL;
+
 
 class cPluginBlock : public cPlugin {
 private:
   cStatusBlock *mStatus;
+  int mLastChannel;
 
 public:
   cPluginBlock(void);
@@ -36,12 +42,15 @@ public:
   virtual cOsdObject *MainMenuAction(void);
   virtual cMenuSetupPage *SetupMenu(void);
   virtual bool SetupParse(const char *Name, const char *Value);
+  virtual void MainThreadHook(void);
   };
 
 cPluginBlock::cPluginBlock(void):
     cPlugin(),
-    mStatus(NULL)
+    mStatus(NULL),
+    mLastChannel(0)
 {
+  temptitle="";
 }
 
 cPluginBlock::~cPluginBlock()
@@ -93,4 +102,57 @@ bool cPluginBlock::SetupParse(const char *Name, const char *Value)
   return SetupBlock.Parse(Name, Value);
 }
 
+void cPluginBlock::MainThreadHook()
+{
+  if (SetupBlock.DetectionMethod!=1) return;//other detection method active in setup
+  channelnumber=cDevice::PrimaryDevice()->CurrentChannel();
+  if (mLastChannel==0)
+  {
+    mLastChannel=channelnumber;
+  }
+
+  const cChannel *channel=Channels.GetByNumber(channelnumber);
+
+  if (channel != NULL && !channel->GroupSep())
+  {
+    cSchedulesLock schedLock;
+    const cSchedules *scheds = cSchedules::Schedules(schedLock);
+            
+    if (scheds == NULL)
+    {
+      return;
+    }
+                                    
+    const cSchedule *sched = scheds->GetSchedule(channel->GetChannelID());
+    if (sched == NULL)
+    {
+      return;
+    }
+                                                                
+    const cEvent *present = sched->GetPresentEvent();
+    const cEvent *follow  = sched->GetFollowingEvent();
+                                                                        
+    if (present == NULL)
+    {
+      return;
+    }
+                        
+    //TODO: check if isrequested is still necessary
+//    if (!cControlBlock::IsRequested() && !EventsBlock.Acceptable(present->Title()))
+    const char* title=present->Title();
+//    dsyslog("plugin-block-DEV: comparing '%s' with '%s'.",title,temptitle);
+    if (strcmp(title,temptitle)==0) return; //current show has already been checked
+    temptitle=(char*)title;
+    if (!EventsBlock.Acceptable(title))
+    {
+    isyslog("plugin-block: channel %d is not acceptable at present", channelnumber);
+    cControl::Launch(new cControlBlock(mLastChannel, channel, present, follow));
+    mLastChannel=0;
+    }
+  }
+}                                                                                                                                                
+
+
+
+                                                                                                                                                                                                                                                                                                
 VDRPLUGINCREATOR(cPluginBlock); // Don't touch this!

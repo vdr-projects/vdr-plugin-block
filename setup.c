@@ -26,6 +26,11 @@ void cMenuSetupBlock::Set(void) {
   Add(new cMenuEditBoolItem(tr("Hide Mainmenu Entry"), &mSetupData.HideMenuEntry));
   Add(new cMenuEditIntItem(tr("Message Timeout [s]"),  &mSetupData.MessageTimeout, 0, 10));
 
+  DetectionMethods[0] = tr("On Switch");
+  DetectionMethods[1] = tr("Channel EPG");
+  
+  Add(new cMenuEditStraItem(tr("Detection Method"), &mSetupData.DetectionMethod, 2, DetectionMethods));
+
   item = new cOsdItem("");
   item->SetSelectable(false);
   Add(item);
@@ -34,7 +39,7 @@ void cMenuSetupBlock::Set(void) {
   item->SetSelectable(false);
   Add(item);
 
-#define NONKEYWORDITEMS 4
+#define NONKEYWORDITEMS 5
 
   int index = 0;
   cEventBlock *event = mEventsData.First();
@@ -71,6 +76,7 @@ void cMenuSetupBlock::Store(void)
   SetupBlock  = mSetupData;
   SetupStore("HideMenuEntry",  SetupBlock.HideMenuEntry);
   SetupStore("MessageTimeout", SetupBlock.MessageTimeout);
+  SetupStore("DetectionMethod", SetupBlock.DetectionMethod);
 }
 
 eOSState cMenuSetupBlock::Edit(void)

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdrportal_midas at gmx dot de>\n"
-"POT-Creation-Date: 2010-04-27 14:26+0200\n"
+"POT-Creation-Date: 2010-06-02 19:00+0200\n"
 "PO-Revision-Date: 2010-04-27 14:19+0200\n"
 "Last-Translator: Klaus Schmidinger <kls@cadsoft.de>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
@@ -32,6 +32,15 @@ msgstr "Hauptmenüeintrag verstecken"
 
 msgid "Message Timeout [s]"
 msgstr "Wartezeit bis Umschalten [s]"
+
+msgid "On Switch"
+msgstr ""
+
+msgid "Channel EPG"
+msgstr ""
+
+msgid "Detection Method"
+msgstr ""
 
 msgid "--- Keywords -------------------------------------------------------------------"
 msgstr "--- Schlagworte ----------------------------------------------------------------"

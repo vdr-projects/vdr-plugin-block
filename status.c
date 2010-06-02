@@ -10,6 +10,7 @@
 #include "status.h"
 #include "control.h"
 #include "event.h"
+#include "config.h"
 
 cStatusBlock::cStatusBlock(void):
     cStatus(),
@@ -19,7 +20,12 @@ cStatusBlock::cStatusBlock(void):
 
 void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
 {
-  printf("cStatusBlock::ChannelSwitch(%p, %d)\n", Device, ChannelNumber);
+  if (SetupBlock.DetectionMethod!=0)
+  {
+//    dsyslog("plugin-block-DEV: StatusBlock::ChannelSwitch did nothing: Detection Method didn't match");
+    return;
+  }
+  //printf("cStatusBlock::ChannelSwitch(%p, %d)\n", Device, ChannelNumber);
 
 #ifdef LOGGING
   dsyslog("plugin-block: cStatusBlock was informed about channel switch at device %d, channel no %d",Device->DeviceNumber(),ChannelNumber);
@@ -75,29 +81,26 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
     return; 
   }
 
-              const cChannel *channel = Channels.GetByNumber(ChannelNumber);
-              if (channel != NULL && !channel->GroupSep()) {
-                      cSchedulesLock schedLock;
-                      const cSchedules *scheds = cSchedules::Schedules(schedLock);
-                      if (scheds == NULL)
-		              return;
+  const cChannel *channel = Channels.GetByNumber(ChannelNumber);
+  if (channel != NULL && !channel->GroupSep()) 
+  {
+    cSchedulesLock schedLock;
+    const cSchedules *scheds = cSchedules::Schedules(schedLock);
+    if (scheds == NULL) return;
 
-			const cSchedule *sched = scheds->GetSchedule(channel->GetChannelID());
-			if (sched == NULL)
-				return;
+    const cSchedule *sched = scheds->GetSchedule(channel->GetChannelID());
+    if (sched == NULL) return;
 
-			const cEvent *present = sched->GetPresentEvent();
-			const cEvent *follow  = sched->GetFollowingEvent();
-			if (present == NULL)
-				return;
+    const cEvent *present = sched->GetPresentEvent();
+    const cEvent *follow  = sched->GetFollowingEvent();
+    if (present == NULL) return;
           		
-          		if (!cControlBlock::IsRequested() && !EventsBlock.Acceptable(present->Title())) {
-				isyslog("plugin-block: channel %d is not acceptable at present", ChannelNumber);
-				cControl::Launch(new cControlBlock(mLastChannel, channel, present, follow));
-				mLastChannel=0;
-			}
-		}
-
-
+    if (!cControlBlock::IsRequested() && !EventsBlock.Acceptable(present->Title())) 
+    {
+      isyslog("plugin-block: channel %d is not acceptable at present", ChannelNumber);
+      cControl::Launch(new cControlBlock(mLastChannel, channel, present, follow));
+      mLastChannel=0;
+    }
+  }
 }
   

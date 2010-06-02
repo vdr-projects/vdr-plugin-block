@@ -30,7 +30,8 @@ cControlBlock::cControlBlock(int LastChannel, const cChannel *Channel, const cEv
 #else
 	needsFastResponse = true;
 #endif
-	cRemote::Put(kOk, true); // Hide OSD
+
+  cRemote::Put(kBack,true); //Hide OSD new version
 }
 
 cControlBlock::~cControlBlock()
@@ -63,6 +64,7 @@ cControlBlock::~cControlBlock()
 			direction = 1;
 		if (!cDevice::SwitchChannel(direction) && (mLastChannel != 0))
 			Channels.SwitchTo(mLastChannel);
+
 	}
 }
 
