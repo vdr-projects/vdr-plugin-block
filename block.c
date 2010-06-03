@@ -106,9 +106,10 @@ void cPluginBlock::MainThreadHook()
 {
   if (SetupBlock.DetectionMethod!=1) return;//other detection method active in setup
   channelnumber=cDevice::PrimaryDevice()->CurrentChannel();
-  if (mLastChannel==0)
+  if (channelnumber==0 || mLastChannel==0) //cond#1: switch in progress
   {
-    mLastChannel=channelnumber;
+    mLastChannel=cDevice::CurrentChannel();
+    return;
   }
 
   const cChannel *channel=Channels.GetByNumber(channelnumber);
