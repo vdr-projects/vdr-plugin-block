@@ -22,7 +22,8 @@ cControlBlock::cControlBlock(const cChannel *Channel, const cEvent *Present, con
 		mFollowing(Following),
 		mStart(0),
 		mSwitch(true),
-		mOsd(NULL)
+		mOsd(NULL),
+		direction(0)
 {
 #if APIVERSNUM >= 10500
 	SetNeedsFastResponse(true);
@@ -59,7 +60,7 @@ cControlBlock::~cControlBlock()
 	if (mSwitch) {
 	        int lastchannel=cSetupBlock::LastChannel;
 		// possibly first or last available channel, fall back to old channel
-		int direction = mChannel->Number() - lastchannel;
+
 		if (direction == 0)
 			direction = 1;
 		if (!cDevice::SwitchChannel(direction) && (lastchannel != 0))
@@ -104,6 +105,7 @@ dsyslog("plugin-block: userint Processing kNone (no user interaction)");
 		if (mStart == 0)
 			Show();
 		else if (time_ms() - mStart > BlockTimeout()) {
+		direction = mChannel->Number() - cSetupBlock::LastChannel;
 			mSwitch = true;
 			return osEnd;
 		}
@@ -112,16 +114,36 @@ dsyslog("plugin-block: userint Processing kNone (no user interaction)");
 		
 
 	case kUp:
-	case kDown:
 	case kChanUp:
+#ifdef LOGGING
+dsyslog("plugin-block: userint Processing up event (userrequest)");
+#endif
+		if (mStart == 0)
+			Show();
+		else 
+		{
+		  mRequested=false;//TODO:necessary? as below
+		  direction = 1;
+		  mSwitch = true;
+		  return osEnd;
+		}
+	        break;
+	case kDown:
 	case kChanDn:
 #ifdef LOGGING
-dsyslog("plugin-block: userint Processing k(Ch)Up/(Ch)Down event.");
+dsyslog("plugin-block: userint Processing down event (userrequest)");
 #endif
-		mRequested = false;
-		mSwitch = true;
-		return osEnd;
-		break;
+		if (mStart == 0)
+			Show();
+		else 
+		{
+		  mRequested=false;//TODO:necessary? as below
+		  direction = -1;
+		  mSwitch = true;
+		  return osEnd;
+		}
+	        break;
+
 
   default:
     break;

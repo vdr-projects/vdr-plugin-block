@@ -14,8 +14,8 @@
 class cControlBlock : public cControl {
 private:
 	static bool           mRequested;
-
-  int                   mLastChannel;
+	int direction;
+	
 	const cChannel       *mChannel;
 	const cEvent         *mPresent;
 	const cEvent         *mFollowing;
