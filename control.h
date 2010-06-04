@@ -28,7 +28,7 @@ protected:
   virtual void Hide(void) {}
 
 public:
-  cControlBlock(int Direction, const cChannel *Channel, const cEvent *Present, const cEvent *Following);
+  cControlBlock(const cChannel *Channel, const cEvent *Present, const cEvent *Following);
   ~cControlBlock();
 
   virtual eOSState ProcessKey(eKeys Key);

@@ -13,19 +13,24 @@
 #include "config.h"
 
 cStatusBlock::cStatusBlock(void):
-    cStatus(),
-    mLastChannel(0) // int
+    cStatus()
 {
 }
 
 void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
 {
-  if (SetupBlock.DetectionMethod!=0)
+  if (cSetupBlock::LastChannel==0)
   {
-//    dsyslog("plugin-block-DEV: StatusBlock::ChannelSwitch did nothing: Detection Method didn't match");
+    cSetupBlock::LastChannel=cDevice::CurrentChannel();
     return;
   }
-  //printf("cStatusBlock::ChannelSwitch(%p, %d)\n", Device, ChannelNumber);
+  if (ChannelNumber==0)
+  {
+    cSetupBlock::LastChannel=cDevice::CurrentChannel();
+    return; //Switch in progress;
+  }
+    
+  if (SetupBlock.DetectionMethod!=0) return;
 
 #ifdef LOGGING
   dsyslog("plugin-block: cStatusBlock was informed about channel switch at device %d, channel no %d",Device->DeviceNumber(),ChannelNumber);
@@ -47,24 +52,6 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
     return;
   }
 
-  if (mLastChannel==0)
-  {
-#ifdef LOGGING
-    dsyslog("plugin-block: Did nothing cause mLastChannel=0 (set to %d)",cDevice::CurrentChannel());
-#endif
-    mLastChannel=cDevice::CurrentChannel();
-    return;
-  }
-  
-  if (ChannelNumber==0) 
-  {
-    mLastChannel=cDevice::CurrentChannel(); 
-#ifdef LOGGING
-    dsyslog("plugin-block: Did nothing because ChannelNumber=0 (some switch is in progress)"); 
-#endif
-    return; //seems that switching is in progress
-  }
-  
   if (ChannelNumber!=cDevice::CurrentChannel())
   {
 #ifdef LOGGING
@@ -98,8 +85,7 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
     if (!cControlBlock::IsRequested() && !EventsBlock.Acceptable(present->Title())) 
     {
       isyslog("plugin-block: channel %d is not acceptable at present", ChannelNumber);
-      cControl::Launch(new cControlBlock(mLastChannel, channel, present, follow));
-      mLastChannel=0;
+      cControl::Launch(new cControlBlock(channel, present, follow));
     }
   }
 }

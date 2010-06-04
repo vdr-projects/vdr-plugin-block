@@ -11,8 +11,6 @@
 #include <vdr/status.h>
 
 class cStatusBlock : public cStatus {
-private:
-  int mLastChannel;
 
 protected:
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);

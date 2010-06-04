@@ -13,6 +13,7 @@ public:
   int  HideMenuEntry;
   int  MessageTimeout;
   int  DetectionMethod;
+  static int LastChannel;
   
   cSetupBlock(void);
   bool Parse(const char *Name, const char *Value);

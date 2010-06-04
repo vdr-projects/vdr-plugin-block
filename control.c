@@ -15,9 +15,8 @@ inline uint64_t BlockTimeout() { return SetupBlock.MessageTimeout * 1000; }
 
 bool cControlBlock::mRequested = false;
 
-cControlBlock::cControlBlock(int LastChannel, const cChannel *Channel, const cEvent *Present, const cEvent *Following):
+cControlBlock::cControlBlock(const cChannel *Channel, const cEvent *Present, const cEvent *Following):
     cControl(new cPlayer),
-    mLastChannel(LastChannel),
 		mChannel(Channel),
 		mPresent(Present),
 		mFollowing(Following),
@@ -58,12 +57,13 @@ cControlBlock::~cControlBlock()
         }
 
 	if (mSwitch) {
+	        int lastchannel=cSetupBlock::LastChannel;
 		// possibly first or last available channel, fall back to old channel
-		int direction = mChannel->Number() - mLastChannel;
+		int direction = mChannel->Number() - lastchannel;
 		if (direction == 0)
 			direction = 1;
-		if (!cDevice::SwitchChannel(direction) && (mLastChannel != 0))
-			Channels.SwitchTo(mLastChannel);
+		if (!cDevice::SwitchChannel(direction) && (lastchannel != 0))
+			Channels.SwitchTo(lastchannel);
 
 	}
 }

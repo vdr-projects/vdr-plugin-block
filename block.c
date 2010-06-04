@@ -29,7 +29,6 @@ static char *temptitle=NULL;
 class cPluginBlock : public cPlugin {
 private:
   cStatusBlock *mStatus;
-  int mLastChannel;
 
 public:
   cPluginBlock(void);
@@ -47,8 +46,7 @@ public:
 
 cPluginBlock::cPluginBlock(void):
     cPlugin(),
-    mStatus(NULL),
-    mLastChannel(0)
+    mStatus(NULL)
 {
   temptitle="";
 }
@@ -106,11 +104,8 @@ void cPluginBlock::MainThreadHook()
 {
   if (SetupBlock.DetectionMethod!=1) return;//other detection method active in setup
   channelnumber=cDevice::PrimaryDevice()->CurrentChannel();
-  if (channelnumber==0 || mLastChannel==0) //cond#1: switch in progress
-  {
-    mLastChannel=cDevice::CurrentChannel();
-    return;
-  }
+
+  if (channelnumber==0) return; //switch in progress
 
   const cChannel *channel=Channels.GetByNumber(channelnumber);
 
@@ -147,8 +142,7 @@ void cPluginBlock::MainThreadHook()
     if (!EventsBlock.Acceptable(title))
     {
     isyslog("plugin-block: channel %d is not acceptable at present", channelnumber);
-    cControl::Launch(new cControlBlock(mLastChannel, channel, present, follow));
-    mLastChannel=0;
+    cControl::Launch(new cControlBlock(channel, present, follow));
     }
   }
 }                                                                                                                                                
