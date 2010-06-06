@@ -18,7 +18,7 @@
 #include "i18n.h"
 #include "control.h"
 
-static const char *VERSION        = "0.0.2rc1";
+static const char *VERSION        = "0.0.2";
 static const char *DESCRIPTION    = trNOOP("Block unwanted shows by EPG title");
 static const char *MAINMENUENTRY  = trNOOP("Block broadcast");
 

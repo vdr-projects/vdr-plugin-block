@@ -1,6 +1,23 @@
 VDR Plugin 'block' Revision History
 -----------------------------------
 
+2010/06/06: Version 0.0.2
+
+Added a new detection method: Channel EPG
+This method scans the running program and not only blocks on zapping but
+also makes the plugin switch to another channel on a changeover to a
+blacklisted show. In some rare cases several stations do not update
+the current EPG signal in sync so unfortunately there might be false 
+detections. It is possible to change the detection method in the plugins
+setup, where 'On Switch' is the old method and 'Channel EPG' the new.
+
+Furthermore it is now possible to change switching directions on a block
+event by pressing the (channel) up/down keys on your remote.
+
+Several other minor code changes. 
+
+
+**************************************************************************
 2010/04/20: Version 0.0.1b
 
 Initial release.
