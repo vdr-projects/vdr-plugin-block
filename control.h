@@ -14,14 +14,14 @@
 class cControlBlock : public cControl {
 private:
 	static bool           mRequested;
-	int direction;
 	
 	const cChannel       *mChannel;
 	const cEvent         *mPresent;
 	const cEvent         *mFollowing;
 	uint64_t              mStart;
 	bool                  mSwitch;
-  cSkinDisplayChannel  *mOsd;
+	cSkinDisplayChannel  *mOsd;
+	int direction;
 
 protected:
 	virtual void Show(void);

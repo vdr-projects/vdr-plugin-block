@@ -48,7 +48,7 @@ cPluginBlock::cPluginBlock(void):
     cPlugin(),
     mStatus(NULL)
 {
-  temptitle="";
+  temptitle=(char*)"";
 }
 
 cPluginBlock::~cPluginBlock()
