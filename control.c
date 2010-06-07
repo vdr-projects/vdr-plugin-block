@@ -17,18 +17,18 @@ bool cControlBlock::mRequested = false;
 
 cControlBlock::cControlBlock(const cChannel *Channel, const cEvent *Present, const cEvent *Following):
     cControl(new cPlayer),
-		mChannel(Channel),
-		mPresent(Present),
-		mFollowing(Following),
-		mStart(0),
-		mSwitch(true),
-		mOsd(NULL),
-		direction(0)
+    mChannel(Channel),
+    mPresent(Present),
+    mFollowing(Following),
+    mStart(0),
+    mSwitch(true),
+    mOsd(NULL),
+    direction(0)
 {
 #if APIVERSNUM >= 10500
-	SetNeedsFastResponse(true);
+  SetNeedsFastResponse(true);
 #else
-	needsFastResponse = true;
+  needsFastResponse = true;
 #endif
 
   cRemote::Put(kBack,true); //Hide OSD new version
@@ -36,8 +36,8 @@ cControlBlock::cControlBlock(const cChannel *Channel, const cEvent *Present, con
 
 cControlBlock::~cControlBlock()
 {
-	if (mOsd != NULL)
-		delete mOsd;
+  if (mOsd != NULL)
+    delete mOsd;
         if (mRequested)
         {
 #ifdef LOGGING
@@ -57,92 +57,92 @@ cControlBlock::~cControlBlock()
           }
         }
 
-	if (mSwitch) {
-	        int lastchannel=cSetupBlock::LastChannel;
-		// possibly first or last available channel, fall back to old channel
+  if (mSwitch) {
+          int lastchannel=cSetupBlock::LastChannel;
+    // possibly first or last available channel, fall back to old channel
 
-		if (direction == 0)
-			direction = 1;
-		if (!cDevice::SwitchChannel(direction) && (lastchannel != 0))
-			Channels.SwitchTo(lastchannel);
+    if (direction == 0)
+      direction = 1;
+    if (!cDevice::SwitchChannel(direction) && (lastchannel != 0))
+      Channels.SwitchTo(lastchannel);
 
-	}
+  }
 }
 
 void cControlBlock::Show(void)
 {
-	if (mOsd == NULL)
-		mOsd = Skins.Current()->DisplayChannel(true);
+  if (mOsd == NULL)
+    mOsd = Skins.Current()->DisplayChannel(true);
 
-	mOsd->SetChannel(mChannel, 0);
-	mOsd->SetEvents(mPresent, mFollowing);
-	mOsd->SetMessage(mtError, tr("Channel not acceptable!"));
-	mOsd->Flush();
+  mOsd->SetChannel(mChannel, 0);
+  mOsd->SetEvents(mPresent, mFollowing);
+  mOsd->SetMessage(mtError, tr("Channel not acceptable!"));
+  mOsd->Flush();
 
-	mStart = time_ms();
+  mStart = time_ms();
 }
 
 eOSState cControlBlock::ProcessKey(eKeys Key)
 {
 #ifdef LOGGING
-	dsyslog("plugin-block: userint cControlBlock::ProcessKey(%d) this = %p", Key, this);
+  dsyslog("plugin-block: userint cControlBlock::ProcessKey(%d) this = %p", Key, this);
 #endif
 
   switch (Key) {
 
-	case kOk:
+  case kOk:
 #ifdef LOGGING
-		dsyslog("plugin-block: userint Processing 'Ok' event");
-#endif		
-		mRequested = true;
-		mSwitch = false;
-		return osEnd;
+    dsyslog("plugin-block: userint Processing 'Ok' event");
+#endif    
+    mRequested = true;
+    mSwitch = false;
+    return osEnd;
 
-	case kNone:
+  case kNone:
 #ifdef LOGGING
 dsyslog("plugin-block: userint Processing kNone (no user interaction)");
 #endif
-		if (mStart == 0)
-			Show();
-		else if (time_ms() - mStart > BlockTimeout()) {
-		direction = mChannel->Number() - cSetupBlock::LastChannel;
-			mSwitch = true;
-			return osEnd;
-		}
-	  return osContinue;
+    if (mStart == 0)
+      Show();
+    else if (time_ms() - mStart > BlockTimeout()) {
+    direction = mChannel->Number() - cSetupBlock::LastChannel;
+      mSwitch = true;
+      return osEnd;
+    }
+    return osContinue;
 
-		
 
-	case kUp:
-	case kChanUp:
+
+  case kUp:
+  case kChanUp:
 #ifdef LOGGING
 dsyslog("plugin-block: userint Processing up event (userrequest)");
 #endif
-		if (mStart == 0)
-			Show();
-		else 
-		{
-		  mRequested=false;//TODO:necessary? as below
-		  direction = 1;
-		  mSwitch = true;
-		  return osEnd;
-		}
-	        break;
-	case kDown:
-	case kChanDn:
+    if (mStart == 0)
+      Show();
+    else 
+    {
+      mRequested=false;//TODO:necessary? as below
+      direction = 1;
+      mSwitch = true;
+      return osEnd;
+    }
+          break;
+  case kDown:
+  case kChanDn:
 #ifdef LOGGING
 dsyslog("plugin-block: userint Processing down event (userrequest)");
 #endif
-		if (mStart == 0)
-			Show();
-		else 
-		{
-		  mRequested=false;//TODO:necessary? as below
-		  direction = -1;
-		  mSwitch = true;
-		  return osEnd;
-		}
-	        break;
+    if (mStart == 0)
+      Show();
+    else 
+    {
+      mRequested=false;//TODO:necessary? as below
+      direction = -1;
+      mSwitch = true;
+      return osEnd;
+    }
+          break;
 
 
   default:
@@ -150,4 +150,3 @@ dsyslog("plugin-block: userint Processing down event (userrequest)");
   }
   return osContinue;
 }
-

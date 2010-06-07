@@ -15,9 +15,9 @@ cSetupBlock SetupBlock;
 int cSetupBlock::LastChannel=0;
 
 cSetupBlock::cSetupBlock(void):
-	HideMenuEntry(0),
-	MessageTimeout(2),
-	DetectionMethod(0)
+  HideMenuEntry(0),
+  MessageTimeout(2),
+  DetectionMethod(0)
 {
 }
 

@@ -9,7 +9,7 @@
 #if VDRVERSNUM < 10507
 
 const tI18nPhrase Phrases[] = {
-	/*
+  /*
   { "English",
     "Deutsch",
     "Slovenski",
@@ -31,7 +31,7 @@ const tI18nPhrase Phrases[] = {
     "Eesti",
     "Dansk",
   },
-	*/
+  */
   { "Block broadcast",
     "Sendung sperren",
     "",
@@ -282,7 +282,7 @@ const tI18nPhrase Phrases[] = {
     "",
 #endif
   },
-	{ "New",
+  { "New",
     "Neu",
     "",
     "",
@@ -307,7 +307,7 @@ const tI18nPhrase Phrases[] = {
     "",
 #endif
   },
-	{ "Delete keyword?",
+  { "Delete keyword?",
     "Schlagwort löschen?",
     "",
     "",
@@ -332,7 +332,7 @@ const tI18nPhrase Phrases[] = {
     "",
 #endif
   },
-	{ "Pattern",
+  { "Pattern",
     "Suchmuster",
     "",
     "",
@@ -357,7 +357,7 @@ const tI18nPhrase Phrases[] = {
     "",
 #endif
   },
-	{ "--- Keywords -------------------------------------------------------------------",
+  { "--- Keywords -------------------------------------------------------------------",
     "--- Schlagworte ----------------------------------------------------------------",
     "",
     "",
@@ -382,7 +382,7 @@ const tI18nPhrase Phrases[] = {
     "",
 #endif
   },
-	{ "Regular Expression",
+  { "Regular Expression",
     "Regulärer Ausdruck",
     "",
     "",
@@ -407,7 +407,7 @@ const tI18nPhrase Phrases[] = {
     "",
 #endif
   },
-	{ "Ignore Case",
+  { "Ignore Case",
     "Groß/Kleinschreibung ignorieren",
     "",
     "",
@@ -432,7 +432,7 @@ const tI18nPhrase Phrases[] = {
     "",
 #endif
   },
-	{ "Malformed regular expression!",
+  { "Malformed regular expression!",
     "Ungültiger regulärer Ausdruck!",
     "",
     "",
@@ -457,7 +457,7 @@ const tI18nPhrase Phrases[] = {
     "",
 #endif
   },
-	{ "Message Timeout [s]",
+  { "Message Timeout [s]",
     "Wartezeit bis Umschalten [s]",
     "",
     "",
@@ -482,7 +482,7 @@ const tI18nPhrase Phrases[] = {
     "",
 #endif
   },
-	{ NULL }
+  { NULL }
 };
 
 #endif

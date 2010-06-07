@@ -28,7 +28,7 @@ void cMenuSetupBlock::Set(void) {
 
   DetectionMethods[0] = tr("On Switch");
   DetectionMethods[1] = tr("Channel EPG");
-  
+
   Add(new cMenuEditStraItem(tr("Detection Method"), &mSetupData.DetectionMethod, 2, DetectionMethods));
 
   item = new cOsdItem("");
@@ -62,8 +62,8 @@ void cMenuSetupBlock::SetHelpKeys(void)
   printf("sethelpkeys, current = %d\n", Current());
 
   if (Current() >= NONKEYWORDITEMS) {
-	red    = trVDR("Button$Edit");
-	yellow = trVDR("Button$Delete");
+    red    = trVDR("Button$Edit");
+    yellow = trVDR("Button$Delete");
   }
   SetHelp(red, trVDR("Button$New"), yellow, NULL);
 }
@@ -104,11 +104,11 @@ eOSState cMenuSetupBlock::Delete(void)
 {
   if (HasSubMenu() || Current() < NONKEYWORDITEMS)
     return osContinue;
-        
+
   cEventBlock *event = mEventsData.Get(Current() - NONKEYWORDITEMS);
   if (event != NULL) {
-	if (Interface->Confirm(tr("Delete keyword?")))
-	  mEventsData.Del(event);
+    if (Interface->Confirm(tr("Delete keyword?")))
+      mEventsData.Del(event);
   }
   Set();
   return osContinue;
@@ -119,8 +119,8 @@ eOSState cMenuSetupBlock::ProcessKey(eKeys Key) {
   eOSState state = cMenuSetupPage::ProcessKey(Key);
 
   if (hadSubMenu && !HasSubMenu()) {
-		Set();
-		return state;
+    Set();
+    return state;
   }
 
   switch (state) {
@@ -138,9 +138,9 @@ eOSState cMenuSetupBlock::ProcessKey(eKeys Key) {
   default:
     break;
   }
-	
-	if (!HasSubMenu())
-		Set();
+
+  if (!HasSubMenu())
+    Set();
 
   return state;
 }
@@ -156,8 +156,8 @@ cMenuSetupEditBlock::cMenuSetupEditBlock(cEventBlock *Event):
   snprintf(buf, sizeof(buf), "%s - %s '%s'", trVDR("Setup"), trVDR("Plugin"), "block");
   SetTitle(buf);
   Add(new cMenuEditStrItem(tr("Pattern"), mData.mPattern, sizeof(mData.mPattern), tr(ALLOWEDCHARS)));
-	Add(new cMenuEditBoolItem(tr("Regular Expression"), &mData.mRegularExp));
-	Add(new cMenuEditBoolItem(tr("Ignore Case"), &mData.mIgnoreCase));
+  Add(new cMenuEditBoolItem(tr("Regular Expression"), &mData.mRegularExp));
+  Add(new cMenuEditBoolItem(tr("Ignore Case"), &mData.mIgnoreCase));
 }
 
 eOSState cMenuSetupEditBlock::ProcessKey(eKeys Key)
@@ -167,13 +167,13 @@ eOSState cMenuSetupEditBlock::ProcessKey(eKeys Key)
   if (state == osUnknown) {
     switch (Key) {
     case kOk:
-			if (!mData.Compile()) {
-				Skins.Message(mtError, tr("Malformed regular expression!"));
-				state = osContinue;
-			} else {
-				*mEvent = mData;
-				state = osBack;
-			}
+      if (!mData.Compile()) {
+      Skins.Message(mtError, tr("Malformed regular expression!"));
+      state = osContinue;
+      } else {
+        *mEvent = mData;
+        state = osBack;
+      }
       break;
 
     default:

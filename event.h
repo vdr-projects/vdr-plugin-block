@@ -10,7 +10,7 @@
 
 #include <sys/types.h>
 #include <regex.h>
-							
+
 #include <vdr/tools.h>
 #include <vdr/config.h>
 
@@ -21,24 +21,24 @@ class cEventBlock : public cListObject {
 
 private:
   char mPattern[EVLINELENGTH];
-	int  mRegularExp;
-	int  mIgnoreCase;
-	bool mCompiled;
+  int  mRegularExp;
+  int  mIgnoreCase;
+  bool mCompiled;
 
-	regex_t mExpression;
+  regex_t mExpression;
 
 public:
   cEventBlock(void);
   cEventBlock(const char *Pattern);
-	cEventBlock(const cEventBlock &Src);
-	~cEventBlock();
+  cEventBlock(const cEventBlock &Src);
+  ~cEventBlock();
 
-	cEventBlock &operator=(const cEventBlock &Src);
+  cEventBlock &operator=(const cEventBlock &Src);
 
   bool Acceptable(const char *Event) const ;
 
   bool Parse(char *s);
-	bool Compile(void);
+  bool Compile(void);
   bool Save(FILE *f);
 
   const char *Pattern(void) const { return mPattern; }

@@ -29,7 +29,7 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
     cSetupBlock::LastChannel=cDevice::CurrentChannel();
     return; //Switch in progress;
   }
-    
+
   if (SetupBlock.DetectionMethod!=0) return;
 
 #ifdef LOGGING
@@ -59,7 +59,7 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
 #endif
     return;
   }
-  
+
   if (Device->Replaying()) 
   {
 #ifdef LOGGING
@@ -81,7 +81,7 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
     const cEvent *present = sched->GetPresentEvent();
     const cEvent *follow  = sched->GetFollowingEvent();
     if (present == NULL) return;
-          		
+
     if (!cControlBlock::IsRequested() && !EventsBlock.Acceptable(present->Title())) 
     {
       isyslog("plugin-block: channel %d is not acceptable at present", ChannelNumber);
@@ -89,4 +89,3 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
     }
   }
 }
-  
