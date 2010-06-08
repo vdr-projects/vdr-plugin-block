@@ -17,7 +17,10 @@ Project homepage: http://www.magoa.net/linux/index.php?view=taste
 
 See the file COPYING for license information.
 
-Description:
+
+**************
+*DESCRIPTION:*
+**************
 
 This plugin prevents you from being bothered by unwanted broadcasts. Instead
 of those the screen will stay black, the sound muted, an info message
@@ -47,3 +50,80 @@ VDR source in order to have multiple channels being blocked in a row.
 Otherwise the block plugin will only skip the first channel. The patch
 originates from the taste plugin and was written by Sascha Volkenandt.
 
+
+
+*************
+*** USAGE ***
+*************
+
+Block current show:
+-------------------
+
+Choose 'Block Broadcast' from the main vdr menu.
+
+
+Edit, delete or manually add new entries:
+-----------------------------------------
+
+Go to the plugins setup in the vdr menu, where you will find the blacklist.
+Use the color keys as shown in the osd.
+Editing additionally allows you to ignore captialization, or to use 
+regular expressions. This way you for example you can use wildcards in
+blacklist patterns and much more.
+
+
+Setup Options:
+--------------
+
+Hide main menu entry: Shows/doesn't show the block plugin main menu entry.
+
+Timeout: Defines how long the block osd message is displayed, before the
+         plugin switches to another channel.
+
+Method: In version 0.0.2 there was a new detection method added. You can
+        choose between 'On Switch' which is the old method that only scans
+        at zap events. The other method is 'Channel EPG' which scans the
+        current epg title permanentely. If you are setting up a parental
+        guidance config you want to use the latter one (see below).
+
+Ok deblocks temporarily: If set to yes this allows a blocked show to be
+                         watched by pressing ok as long as the block osd
+                         message is displayed. It does not permanentely
+                         deblock a show. If you are setting up a parental
+                         guidance config you want to set this to 'no'
+                         (see below).
+
+
+Parental Guidance Setup 
+(Experimental as of version 0.0.2+dev):
+---------------------------------------
+
+First of all: I can't guarantee a perfectly failsafe childprotection.
+              Feel free to test the Parental Guidance Config at your
+              own risk but don't forget, that it is you not me who
+              takes care of your children. Nevertheless the method
+              used by the plugin should work quite good, as long as
+              the stations are updating their epg signal in sync
+              with the current show.
+
+How to: Several prerequisites have to be configured in the plugins
+        setup. For your convenience these are set by manually adding
+
+        block.ParentalGuidance=1
+
+        to vdrs setup.conf. vdr has to be stopped before you edit
+        the file, otherwise it will be overwritten the 
+        next time vdr stops and your changes will be lost.
+        
+        Setting ParentalGuidance to 1 overrides two other setup
+        options: Detection Method is set to 'Channel EPG' and
+        Ok deblocks temporarily is set to 'No', as obviously
+        other settings would undermine Parental Guidance mode.
+        Furthermore the color keys (Edit, New, Delete) are
+        deactivated in the plugins setup.
+
+
+Finally improvements may depend on your feeback, so please drop me a line 
+if you experience any kind of potential misbehaviour of the plugin, if you
+have suggestions how to make the block plugin better etc. or if you just
+want to say thank you ;) !
