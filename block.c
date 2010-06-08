@@ -102,7 +102,7 @@ bool cPluginBlock::SetupParse(const char *Name, const char *Value)
 
 void cPluginBlock::MainThreadHook()
 {
-  if (SetupBlock.DetectionMethod!=1) return;//other detection method active in setup
+  if (cSetupBlock::DetectionMethod!=1) return;//other detection method active in setup
   channelnumber=cDevice::PrimaryDevice()->CurrentChannel();
 
   if (channelnumber==0) return; //switch in progress
@@ -113,26 +113,26 @@ void cPluginBlock::MainThreadHook()
   {
     cSchedulesLock schedLock;
     const cSchedules *scheds = cSchedules::Schedules(schedLock);
-
+            
     if (scheds == NULL)
     {
       return;
     }
-
+                                    
     const cSchedule *sched = scheds->GetSchedule(channel->GetChannelID());
     if (sched == NULL)
     {
       return;
     }
-
+                                                                
     const cEvent *present = sched->GetPresentEvent();
     const cEvent *follow  = sched->GetFollowingEvent();
-
+                                                                        
     if (present == NULL)
     {
       return;
     }
-
+                        
     //TODO: check if isrequested is still necessary
 //    if (!cControlBlock::IsRequested() && !EventsBlock.Acceptable(present->Title()))
     const char* title=present->Title();
@@ -145,9 +145,9 @@ void cPluginBlock::MainThreadHook()
     cControl::Launch(new cControlBlock(channel, present, follow));
     }
   }
-}
+}                                                                                                                                                
 
 
 
-
+                                                                                                                                                                                                                                                                                                
 VDRPLUGINCREATOR(cPluginBlock); // Don't touch this!

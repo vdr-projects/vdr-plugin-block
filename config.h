@@ -12,9 +12,12 @@ class cSetupBlock {
 public:
   int  HideMenuEntry;
   int  MessageTimeout;
-  int  DetectionMethod;
+  static int DetectionMethod;
   static int LastChannel;
-
+  int ExtraOptionsVisible;
+  static int OkAllowed;
+  
+  
   cSetupBlock(void);
   bool Parse(const char *Name, const char *Value);
 };

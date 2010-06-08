@@ -13,18 +13,18 @@
 
 class cControlBlock : public cControl {
 private:
-  static bool           mRequested;
-
-  const cChannel       *mChannel;
-  const cEvent         *mPresent;
-  const cEvent         *mFollowing;
-  uint64_t              mStart;
-  bool                  mSwitch;
-  cSkinDisplayChannel  *mOsd;
-  int direction;
+	static bool           mRequested;
+	
+	const cChannel       *mChannel;
+	const cEvent         *mPresent;
+	const cEvent         *mFollowing;
+	uint64_t              mStart;
+	bool                  mSwitch;
+	cSkinDisplayChannel  *mOsd;
+	int direction;
 
 protected:
-  virtual void Show(void);
+	virtual void Show(void);
   virtual void Hide(void) {}
 
 public:
@@ -33,7 +33,7 @@ public:
 
   virtual eOSState ProcessKey(eKeys Key);
 
-  static bool IsRequested(void) { bool r = mRequested; mRequested = false; return r; }
+	static bool IsRequested(void) { bool r = mRequested; mRequested = false; return r; }
 };
 
 #endif // VDR_BLOCK_CONTROL_H

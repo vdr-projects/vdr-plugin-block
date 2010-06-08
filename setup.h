@@ -18,7 +18,7 @@ private:
   cEventsBlock mEventsData;
   cSetupBlock  mSetupData;
   const char *DetectionMethods[2];
-
+  
 protected:
   virtual void Store(void);
   virtual eOSState ProcessKey(eKeys Key);
