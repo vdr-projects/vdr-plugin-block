@@ -67,9 +67,8 @@ Edit, delete or manually add new entries:
 
 Go to the plugins setup in the vdr menu, where you will find the blacklist.
 Use the color keys as shown in the osd.
-Editing additionally allows you to ignore captialization, or to use 
-regular expressions. This way you for example you can use wildcards in
-blacklist patterns and much more.
+Editing additionally allows you to ignore case, or to use regular 
+expressions.
 
 
 Setup Options:

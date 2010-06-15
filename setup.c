@@ -29,23 +29,16 @@ void cMenuSetupBlock::Set(void) {
   DetectionMethods[0] = tr("On Switch");
   DetectionMethods[1] = tr("Channel EPG");
 
-  if(mSetupData.ExtraOptionsVisible==1)
+  cMenuEditStraItem *methoditem = new cMenuEditStraItem(tr("Detection Method"), &mSetupData.DetectionMethod, 2, DetectionMethods);
+  cMenuEditBoolItem *okitem = new cMenuEditBoolItem(tr("Ok deblocks temporarily"), &mSetupData.OkAllowed);
+  
+  if(cSetupBlock::ParentalGuidance==1)
   {
-    Add(new cMenuEditStraItem(tr("Detection Method"), &mSetupData.DetectionMethod, 2, DetectionMethods));
-    Add(new cMenuEditBoolItem(tr("Ok deblocks temporarily"), &mSetupData.OkAllowed));
-  }
-  else
-  {
-    cMenuEditStraItem *methoditem = new cMenuEditStraItem(tr("Detection Method"), &mSetupData.DetectionMethod, 2, DetectionMethods);
-    cMenuEditBoolItem *okitem = new cMenuEditBoolItem(tr("Ok deblocks temporarily"), &mSetupData.OkAllowed);
     methoditem->SetSelectable(false);
     okitem->SetSelectable(false);
-    Add(methoditem);
-    Add(okitem);
-//    Add((new cMenuEditStraItem(tr("Detection Method"), &mSetupData.DetectionMethod, 2, DetectionMethods))::SetSelectable(false));
-//    Add(new cMenuEditBoolItem(tr("Ok deblocks temporarily"), &mSetupData.ExtraOptionsVisible));
-  }  
-
+  }
+  Add(methoditem);
+  Add(okitem);
   
   item = new cOsdItem("");
   item->SetSelectable(false);
@@ -143,10 +136,12 @@ eOSState cMenuSetupBlock::ProcessKey(eKeys Key) {
   switch (state) {
   case osUnknown: // normal key handling
     switch (Key) {
-    case kRed:    if (mSetupData.ExtraOptionsVisible==1) return Edit();
-    case kGreen:  return New();
-    case kYellow: if (mSetupData.ExtraOptionsVisible==1) return Delete();
-
+    case kRed:    if (mSetupData.ParentalGuidance!=1) return Edit();
+                  break;
+    case kGreen:  if (mSetupData.ParentalGuidance!=1) return New();
+                  break;
+    case kYellow: if (mSetupData.ParentalGuidance!=1) return Delete();
+                  break;
     default:
       break;
     }

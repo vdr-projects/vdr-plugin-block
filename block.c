@@ -9,6 +9,7 @@
  *
  */
 
+#include <getopt.h>
 #include <vdr/plugin.h>
 
 #include "status.h"
@@ -18,7 +19,7 @@
 #include "i18n.h"
 #include "control.h"
 
-static const char *VERSION        = "0.0.2";
+static const char *VERSION        = "0.0.3";
 static const char *DESCRIPTION    = trNOOP("Block unwanted shows by EPG title");
 static const char *MAINMENUENTRY  = trNOOP("Block broadcast");
 
@@ -42,6 +43,7 @@ public:
   virtual cMenuSetupPage *SetupMenu(void);
   virtual bool SetupParse(const char *Name, const char *Value);
   virtual void MainThreadHook(void);
+  //virtual bool ProcessArgs(int argc, char *argv[]);
   };
 
 cPluginBlock::cPluginBlock(void):
@@ -136,18 +138,46 @@ void cPluginBlock::MainThreadHook()
     //TODO: check if isrequested is still necessary
 //    if (!cControlBlock::IsRequested() && !EventsBlock.Acceptable(present->Title()))
     const char* title=present->Title();
-//    dsyslog("plugin-block-DEV: comparing '%s' with '%s'.",title,temptitle);
     if (strcmp(title,temptitle)==0) return; //current show has already been checked
     temptitle=(char*)title;
     if (!EventsBlock.Acceptable(title))
     {
-    isyslog("plugin-block: channel %d is not acceptable at present", channelnumber);
+    isyslog("plugin-block: channel %d blocked", channelnumber);
     cControl::Launch(new cControlBlock(channel, present, follow));
     }
   }
 }                                                                                                                                                
 
-
-
+/*
+bool cPluginBlock::ProcessArgs (int argc, char *argv[])
+{
+  static const char short_options[] = "p:";
+  
+  static const struct option long_options[] =
+  {
+    { "ParentalGuidance", required_argument, NULL, 'p' },
+    {NULL}
+  };
+  
+  int c;
+  for (c=0;c<argc;c++)
+  {
+    dsyslog("plugin-block-DEV: argv[%d]=%s",c,argv[c]);
+  }
+  c=0;
+  while ((c = getopt_long(argc,argv,short_options,long_options,NULL))!=-1)
+  {
+    switch (c)
+    {
+      case 'p': cSetupBlock::ParentalGuidance=atoi(optarg);
+                //dsyslog("plugin-block-DEV: ParentalGuidance set to %s by cl argument.",optarg);
+                break;
+      default:  //dsyslog("plugin-block-DEV: unrecognized command line option %s",optarg );
+                break;//usually return false, but parental guidance could also be set in setup.conf or not at all!
+    }
+  }
+  return true;
+}
+*/
                                                                                                                                                                                                                                                                                                 
 VDRPLUGINCREATOR(cPluginBlock); // Don't touch this!

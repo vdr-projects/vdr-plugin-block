@@ -55,6 +55,7 @@ cControlBlock::~cControlBlock()
              //changed that to NULL
              dsyslog("plugin-block: userint Cannot switch - channel unknown!");
           }
+          mRequested=false;
         }
 
 	if (mSwitch) {
@@ -76,7 +77,7 @@ void cControlBlock::Show(void)
 
 	mOsd->SetChannel(mChannel, 0);
 	mOsd->SetEvents(mPresent, mFollowing);
-	mOsd->SetMessage(mtError, tr("Channel not acceptable!"));
+	mOsd->SetMessage(mtError, tr("Current show blocked!"));
 	mOsd->Flush();
 
 	mStart = time_ms();
@@ -106,7 +107,7 @@ eOSState cControlBlock::ProcessKey(eKeys Key)
                   mSwitch = true;
                   if (mOsd != NULL)
                   {
-                    mOsd->SetMessage(mtError, tr("No Permission!"));
+                    mOsd->SetMessage(mtError, tr("Permission denied!"));
                     mOsd->Flush();
                   }
                 }

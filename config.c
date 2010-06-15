@@ -15,26 +15,28 @@ cSetupBlock SetupBlock;
 int cSetupBlock::LastChannel=0;
 int cSetupBlock::DetectionMethod=0;
 int cSetupBlock::OkAllowed=1;
+int cSetupBlock::ParentalGuidance=-1;//negative value to check later if already set by commandline argument
 
 cSetupBlock::cSetupBlock(void):
 	HideMenuEntry(0),
-	MessageTimeout(2),
-	ExtraOptionsVisible(1)
+	MessageTimeout(2)
 {
 }
+
 
 bool cSetupBlock::Parse(const char *Name, const char *Value)
 {
   if (strcmp(Name, "HideMenuEntry")  == 0) HideMenuEntry  = atoi(Value);
     else if (strcmp(Name, "MessageTimeout") == 0) MessageTimeout = atoi(Value);
       else if (strcmp(Name, "DetectionMethod") == 0) DetectionMethod = atoi(Value);
-
-        //if you want to make use of the following you have to manually add Block.ExtraOptionsVisible to your setup.conf
-        //0 means options 'Detection Method' and 'Ok temporarily deblocks' are not visible (eg for parental guidance)
-        //1 means the options are visible in the setup of vdr and everybody could alter the values
-        else if (strcmp(Name, "ExtraOptionsVisible") == 0) ExtraOptionsVisible = atoi(Value);
-
-          else if (strcmp(Name, "OkAllowed")==0) OkAllowed = atoi(Value);
+        else if (strcmp(Name, "OkAllowed")==0) OkAllowed = atoi(Value);
+          else if (strcmp(Name, "ParentalGuidance") == 0) ParentalGuidance=atoi(Value); //if cl is parsed a check has to be implemented here, to let cl value override setup.conf
             else return false;
+  if (ParentalGuidance!=-1 && ParentalGuidance!=0) //-1 if not set by cl oder setup.conf - 0 if set to disabled - other value = enabled
+  {
+    cSetupBlock::DetectionMethod=1;
+    cSetupBlock::OkAllowed=0;
+  }
   return true;
 }
+

@@ -21,16 +21,28 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
 {
   if (cSetupBlock::LastChannel==0)
   {
+#ifdef LOGGING
+    dsyslog("plugin-block: ChannelSwitch returned because LastChannel=0");
+#endif    
     cSetupBlock::LastChannel=cDevice::CurrentChannel();
     return;
   }
   if (ChannelNumber==0)
   {
+#ifdef LOGGING
+    dsyslog("plugin-block: ChannelSwitch returned because ChannelNumber=0 (switch in progess)");
+#endif
     cSetupBlock::LastChannel=cDevice::CurrentChannel();
     return; //Switch in progress;
   }
     
-  if (cSetupBlock::DetectionMethod!=0) return;
+  if (cSetupBlock::DetectionMethod!=0) 
+  {
+#ifdef LOGGING
+    dsyslog("plugin-block: ChannelSwitch returned because other detection method active");
+#endif
+    return;
+  }
 
 #ifdef LOGGING
   dsyslog("plugin-block: cStatusBlock was informed about channel switch at device %d, channel no %d",Device->DeviceNumber(),ChannelNumber);
@@ -73,18 +85,34 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
   {
     cSchedulesLock schedLock;
     const cSchedules *scheds = cSchedules::Schedules(schedLock);
-    if (scheds == NULL) return;
+    if (scheds == NULL) 
+    {
+#ifdef LOGGING
+      dsyslog("plugin-block: ChannelSwitch: scheds=null caused return");
+#endif      
+      return;
+    }
 
     const cSchedule *sched = scheds->GetSchedule(channel->GetChannelID());
-    if (sched == NULL) return;
-
+    if (sched == NULL)
+    {
+#ifdef LOGGING
+      dsyslog("plugin-block: ChannelSwitch: sched=null caused return");
+#endif      
+      return;
+    }
     const cEvent *present = sched->GetPresentEvent();
     const cEvent *follow  = sched->GetFollowingEvent();
-    if (present == NULL) return;
-          		
+    if (present == NULL)
+    {
+#ifdef LOGGING
+      dsyslog("plugin-block: present=null return");
+#endif
+      return;
+    }
     if (!cControlBlock::IsRequested() && !EventsBlock.Acceptable(present->Title())) 
     {
-      isyslog("plugin-block: channel %d is not acceptable at present", ChannelNumber);
+      dsyslog("plugin-block: channel %d blocked", ChannelNumber);
       cControl::Launch(new cControlBlock(channel, present, follow));
     }
   }

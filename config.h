@@ -14,12 +14,13 @@ public:
   int  MessageTimeout;
   static int DetectionMethod;
   static int LastChannel;
-  int ExtraOptionsVisible;
+  static int ParentalGuidance;
   static int OkAllowed;
   
   
   cSetupBlock(void);
   bool Parse(const char *Name, const char *Value);
+    
 };
 
 extern cSetupBlock SetupBlock;
