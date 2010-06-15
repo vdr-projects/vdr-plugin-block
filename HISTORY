@@ -1,6 +1,17 @@
 VDR Plugin 'block' Revision History
 -----------------------------------
 
+2010/06/15: Version 0.0.3
+
+Added experimental parental guidance functions. Please see README 
+for details.
+
+Several strings changed / German translation updated.
+
+Bugfixing.
+
+
+**************************************************************************
 2010/06/06: Version 0.0.2
 
 Added a new detection method: Channel EPG
