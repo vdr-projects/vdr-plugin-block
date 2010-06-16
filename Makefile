@@ -41,7 +41,7 @@ APIVERSION = $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' $(VDRDI
 ### The name of the distribution archive:
 
 ARCHIVE = $(PLUGIN)-$(VERSION)
-PACKAGE = vdr-$(ARCHIVE)
+PACKAGE = vdr-plugin-$(ARCHIVE)
 
 ### Includes and Defines (add further entries here):
 
