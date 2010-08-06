@@ -6,79 +6,62 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
-"Report-Msgid-Bugs-To: vdrportal_midas at gmx dot de\n"
-"POT-Creation-Date: 2010-06-10 21:29+0200\n"
-"PO-Revision-Date: 2010-06-10 21:29+0200\n"
+"Report-Msgid-Bugs-To: <vdrportal_midas at gmx dot de>\n"
+"POT-Creation-Date: 2010-08-03 05:23+0200\n"
+"PO-Revision-Date: 2010-08-03 05:23+0200\n"
 "Last-Translator: Klaus Schmidinger <kls@cadsoft.de>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: block.c:23
 msgid "Block unwanted shows by EPG title"
 msgstr "Sendung/EPG-Titel sperren"
 
-#: block.c:24
-msgid "Block broadcast"
-msgstr "Sendung sperren"
+msgid "(De)Block broadcast"
+msgstr "Sendung (ent)sperren"
 
-#: control.c:79
-msgid "Current show blocked!"
-msgstr "Aktuelle Sendung gesperrt!"
-
-#: control.c:109
-msgid "Permission denied!"
-msgstr "Aktion nicht erlaubt!"
-
-#: event.c:27
-msgid "New Entry"
-msgstr "Neuer Eintrag"
-
-#: setup.c:26
-msgid "Hide Mainmenu Entry"
-msgstr "Hauptmenüeintrag verstecken"
-
-#: setup.c:27
-msgid "Message Timeout [s]"
-msgstr "Wartezeit bis Umschalten [s]"
-
-#: setup.c:29
-msgid "On Switch"
-msgstr "Beim Umschalten"
-
-#: setup.c:30
-msgid "Channel EPG"
-msgstr "Kanal EPG"
-
-#: setup.c:32
-msgid "Detection Method"
-msgstr "Methode"
-
-#: setup.c:33
-msgid "Ok deblocks temporarily"
-msgstr "Ok entsperrt temporär"
-
-#: setup.c:47
-msgid "--- Keywords -------------------------------------------------------------------"
-msgstr "--- Schlagworte ----------------------------------------------------------------"
-
-#: setup.c:120
 msgid "Delete keyword?"
 msgstr "Schlagwort löschen?"
 
-#: setup.c:170
+msgid "Current show blocked!"
+msgstr "Aktuelle Sendung gesperrt!"
+
+msgid "Permission denied!"
+msgstr "Aktion nicht erlaubt!"
+
+msgid "New Entry"
+msgstr "Neuer Eintrag"
+
+msgid "Hide Mainmenu Entry"
+msgstr "Hauptmenüeintrag verstecken"
+
+msgid "Message Timeout [s]"
+msgstr "Wartezeit bis Umschalten [s]"
+
+msgid "On Switch"
+msgstr "Beim Umschalten"
+
+msgid "Channel EPG"
+msgstr "Kanal EPG"
+
+msgid "Detection Method"
+msgstr "Methode"
+
+msgid "Ok deblocks temporarily"
+msgstr "Ok entsperrt temporär"
+
+msgid "--- Keywords -------------------------------------------------------------------"
+msgstr "--- Schlagworte ----------------------------------------------------------------"
+
 msgid "Pattern"
 msgstr "Suchmuster"
 
-#: setup.c:171
 msgid "Regular Expression"
 msgstr "Regulärer Ausdruck"
 
-#: setup.c:172
 msgid "Ignore Case"
 msgstr "Groß/Kleinschreibung ignorieren"
 
-#: setup.c:183
 msgid "Malformed regular expression!"
 msgstr "Ungültiger regulärer Ausdruck!"

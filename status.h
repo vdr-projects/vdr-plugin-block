@@ -14,7 +14,9 @@ class cStatusBlock : public cStatus {
 
 protected:
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
-
+  virtual void Replaying(const cControl *Control,
+                         const char *Name,
+                         const char *FileName, bool On);
 public:
   cStatusBlock(void);
 };

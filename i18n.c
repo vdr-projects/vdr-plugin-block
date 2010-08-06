@@ -32,8 +32,8 @@ const tI18nPhrase Phrases[] = {
     "Dansk",
   },
 	*/
-  { "Block broadcast",
-    "Sendung sperren",
+  { "(De)Block broadcast",
+    "Sendung (ent)sperren",
     "",
     "",
     "",

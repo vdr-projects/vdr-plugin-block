@@ -1,6 +1,31 @@
 VDR Plugin 'block' Revision History
 -----------------------------------
 
+2010/08/06: Version 0.0.4
+New Features:
+  -The main menu entry now not only adds the title of the current
+   show to the blacklist, but also permanentely removes the title
+   if it is already found in the blacklist.
+
+Bugfixes:
+  -with detection method 'Channel EPG' and while watching
+   a recorded show VDR stopped playback and switched
+   to another channel on a block event. Fixed now.
+
+  -Channel Up and Channel Down keys were not working at all !!
+   I did not notice that because these keys are not configured
+   on my remote and the code seemed pretty much straight-forward. 
+   But it turned out that the key-handling of VDR itself differs 
+   from the one for Up and Down. It was quite hard to find a solution,
+   but finally I found a workaround in sending Up or Down in case the user 
+   presses Channel Up or Channel Down from the plugin code to VDR ;).
+   Subsequently these internally sent Up or Down keys are interpreted 
+   by the plugin in the next main thread loop.
+
+   Thanks to igel who again was the only one reporting this bug ;).
+
+
+**************************************************************************
 2010/06/15: Version 0.0.3
 
 Added experimental parental guidance functions. Please see README 

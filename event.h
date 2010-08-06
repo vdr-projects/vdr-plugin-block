@@ -40,7 +40,9 @@ public:
   bool Parse(char *s);
 	bool Compile(void);
   bool Save(FILE *f);
-
+  static const char *LastTitle;
+  static const bool *ReplayingRecording;
+    
   const char *Pattern(void) const { return mPattern; }
 };
 

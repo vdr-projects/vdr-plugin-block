@@ -118,7 +118,9 @@ eOSState cControlBlock::ProcessKey(eKeys Key)
 dsyslog("plugin-block: userint Processing kNone (no user interaction)");
 #endif
 		if (mStart == 0)
+		{
 			Show();
+                }
 		else if (time_ms() - mStart > BlockTimeout()) {
 		direction = mChannel->Number() - cSetupBlock::LastChannel;
 			mSwitch = true;
@@ -126,10 +128,14 @@ dsyslog("plugin-block: userint Processing kNone (no user interaction)");
 		}
 	  return osContinue;
 
-		
-
-	case kUp:
 	case kChanUp:
+                //workaround cause 'normal' code wont work here; vdr does not react on code/destructor here o.O
+                //this is because in case of chan +/- keys have a chance to get eaten by vdr itself
+                cRemote::Put(kUp,true);
+                return osContinue;
+                break;
+        
+	case kUp:                
 #ifdef LOGGING
 dsyslog("plugin-block: userint Processing up event (userrequest)");
 #endif
@@ -137,14 +143,21 @@ dsyslog("plugin-block: userint Processing up event (userrequest)");
 			Show();
 		else 
 		{
-		  mRequested=false;//TODO:necessary? as below
+		  mRequested=false;//TODO:necessary? as above
 		  direction = 1;
 		  mSwitch = true;
 		  return osEnd;
 		}
 	        break;
-	case kDown:
+
 	case kChanDn:
+                //workaround cause 'normal' code wont work here; vdr does not react on code/destructor here o.O
+                //this is because in case of chan +/- keys have a chance to get eaten by vdr itself
+                cRemote::Put(kDown,true);
+                return osContinue;
+                break;
+        
+	case kDown:
 #ifdef LOGGING
 dsyslog("plugin-block: userint Processing down event (userrequest)");
 #endif
@@ -152,16 +165,15 @@ dsyslog("plugin-block: userint Processing down event (userrequest)");
 			Show();
 		else 
 		{
-		  mRequested=false;//TODO:necessary? as below
+		  mRequested=false;//TODO:necessary? as above
 		  direction = -1;
 		  mSwitch = true;
 		  return osEnd;
 		}
 	        break;
 
-
-  default:
-    break;
+        default:
+                break;
   }
   return osContinue;
 }

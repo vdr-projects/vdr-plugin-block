@@ -17,6 +17,9 @@ static char *duptolower(const char *s) {
 	return c;
 }
 
+const char* cEventBlock::LastTitle="block_dummy_title3";
+const bool* cEventBlock::ReplayingRecording=false;
+
 cEventsBlock EventsBlock;
 
 cEventBlock::cEventBlock(void):
