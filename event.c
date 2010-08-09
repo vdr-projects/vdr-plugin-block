@@ -9,7 +9,7 @@
 
 #include <ctype.h>
 
-static char *duptolower(const char *s) {
+char* cEventBlock::duptolower(const char *s) {
 	char *c = strdup(s);
 	char *p = c;
 	for (; *p; ++p)
@@ -65,8 +65,8 @@ bool cEventBlock::Acceptable(const char *Event) const
 	if (mRegularExp)
 		return regexec(&mExpression, Event, 0, NULL, 0) != 0;
 	else if (mIgnoreCase) {
-		char *ev = duptolower(Event);
-		char *pa = duptolower(mPattern);
+		char *ev = cEventBlock::duptolower(Event);
+		char *pa = cEventBlock::duptolower(mPattern);
 		printf("check for %s in %s\n", pa, ev);
 		bool res = strstr(ev, pa) == NULL;
 		free(ev); free(pa);

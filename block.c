@@ -21,7 +21,7 @@
 #include "common.h"
 #include <vdr/interface.h>
 
-static const char *VERSION        = "0.0.4";
+static const char *VERSION        = "0.0.4+201008090412";
 static const char *DESCRIPTION    = trNOOP("Block unwanted shows by EPG title");
 static const char *MAINMENUENTRY  = trNOOP("(De)Block broadcast");
 
@@ -96,6 +96,7 @@ cOsdObject *cPluginBlock::MainMenuAction(void)
     if (EventsBlock.Acceptable(present->Title()))
     {
      EventsBlock.Add(new cEventBlock(present->Title()));
+     EventsBlock.Sort();
      EventsBlock.Save();
     }
     else

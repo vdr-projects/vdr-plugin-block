@@ -42,8 +42,17 @@ public:
   bool Save(FILE *f);
   static const char *LastTitle;
   static const bool *ReplayingRecording;
-    
+
+  static char *duptolower(const char*);
+
   const char *Pattern(void) const { return mPattern; }
+
+  virtual int Compare(const cListObject &src) const 
+  {
+   cEventBlock* rhs=(cEventBlock*)&src;
+   char* l=cEventBlock::duptolower(mPattern);
+   char* r=cEventBlock::duptolower(rhs->mPattern);
+   return strcmp(l,r); }
 };
 
 class cEventsBlock : public cConfig<cEventBlock> {

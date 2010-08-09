@@ -80,6 +80,7 @@ void cMenuSetupBlock::SetHelpKeys(void)
 void cMenuSetupBlock::Store(void) 
 {
   EventsBlock = mEventsData;
+  EventsBlock.Sort();
   EventsBlock.Save();
 
   SetupBlock  = mSetupData;
@@ -192,5 +193,6 @@ eOSState cMenuSetupEditBlock::ProcessKey(eKeys Key)
       break;
     }
   }
+  EventsBlock.Sort();
   return state;
 }
