@@ -195,22 +195,18 @@ void cPluginBlock::MainThreadHook()
             
     if (scheds == NULL)
     {
-#ifdef LOGGING
-      dsyslog("plugin-block: doing nothing because scheds==NULL");             
-#endif      
-      return;
+     char *dummy=cEventBlock::getTimeStamp();
+     dsyslog("plugin-block: no EPG data (scheds==NULL) - using dummy for LastTitle: %s",dummy);
+     cEventBlock::LastTitle=(char*)dummy;
+     return;
     }
                                     
     const cSchedule *sched = scheds->GetSchedule(channel->GetChannelID());
     if (sched == NULL)
     {
-     char *dummy;
-     asprintf(&dummy, "%jd", (intmax_t)time_ms());
-     dsyslog("plugin-block: no EPG data - using dummy for LastTitle: %s",dummy);
+     char *dummy=cEventBlock::getTimeStamp();
+     dsyslog("plugin-block: no EPG data (sched==NULL) - using dummy for LastTitle: %s",dummy);
      cEventBlock::LastTitle=(char*)dummy;
-#ifdef LOGGING    
-     dsyslog("plugin-block: doing nothing because sched==NULL");
-#endif
      return;
     }
                                                                 
@@ -219,20 +215,21 @@ void cPluginBlock::MainThreadHook()
                                                                         
     if (present == NULL)
     {
-#ifdef LOGGING
-      dsyslog("plugin-block: doing nothing because present==NULL");
-#endif
-      return;
+     char *dummy=cEventBlock::getTimeStamp();
+     dsyslog("plugin-block: no EPG title (present==NULL) - using dummy for LastTitle: %s",dummy);
+     cEventBlock::LastTitle=(char*)dummy;
+     return;
     }
                         
     //TODO: check if isrequested is still necessary
 //    if (!cControlBlock::IsRequested() && !EventsBlock.Acceptable(present->Title()))
     const char* title=present->Title();
-    if (strcmp(title,"")==0)
+    if (strcmp(title,"")==0) //dunno if this could ever be reached (most likely any of the above would be NULL before)
     {
-     char *dummy;
-     asprintf(&dummy, "%jd", (intmax_t)time_ms());
-     dsyslog("plugin-block: no current EPG title - using dummy for LastTitle: %s",title);
+     char *dummy=cEventBlock::getTimeStamp();
+     dsyslog("plugin-block: no EPG title ("") - using dummy for LastTitle: %s",dummy);
+     cEventBlock::LastTitle=(char*)dummy;
+     return;
     }
   
     if (strcmp(title,cEventBlock::LastTitle)==0) 

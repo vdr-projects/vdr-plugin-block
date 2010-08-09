@@ -7,6 +7,7 @@
 
 #include "event.h"
 
+#include "common.h"
 #include <ctype.h>
 
 char* cEventBlock::duptolower(const char *s) {
@@ -15,6 +16,18 @@ char* cEventBlock::duptolower(const char *s) {
 	for (; *p; ++p)
 		*p = tolower(*p);
 	return c;
+}
+
+char* cEventBlock::getTimeStamp()
+//Attention: this one will not return the exact UNIX time!
+//Some internal cast seems to blur the word length here.
+//For use in the block plugin this implementation however
+//suffices because it returns something in the millisecond
+//range. If you want to improve please send me an email ;) 
+{
+ char *dummy;
+ asprintf(&dummy, "%jd", (intmax_t)time_ms());
+ return dummy;
 }
 
 const char* cEventBlock::LastTitle="block_dummy_title3";

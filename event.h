@@ -14,6 +14,7 @@
 #include <vdr/tools.h>
 #include <vdr/config.h>
 
+
 #define EVLINELENGTH 256
 
 class cEventBlock : public cListObject {
@@ -44,6 +45,8 @@ public:
   static const bool *ReplayingRecording;
 
   static char *duptolower(const char*);
+//  static char *getTimeStamp(){ char *dummy; asprintf(&dummy, "%jd", (intmax_t)time_ms()); return dummy; };
+  static char *getTimeStamp();
 
   const char *Pattern(void) const { return mPattern; }
 
