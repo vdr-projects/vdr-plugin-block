@@ -20,7 +20,10 @@ cStatusBlock::cStatusBlock(void):
 void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
 {
   int current_channel=cDevice::CurrentChannel();
-
+#ifdef LOGGING
+  int device_number=Device->DeviceNumber();
+#endif  
+  
   if (cSetupBlock::LastChannel==0)
   {
 #ifdef LOGGING

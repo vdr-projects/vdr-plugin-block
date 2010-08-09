@@ -137,8 +137,14 @@ bool cPluginBlock::SetupParse(const char *Name, const char *Value)
 void cPluginBlock::MainThreadHook()
 {
 
-  if (cSetupBlock::DetectionMethod!=1) return;//other detection method active in setup
-
+  if (cSetupBlock::DetectionMethod!=1) 
+  {
+#ifdef LOGGING
+   dsyslog("plugin-block: MainThreadHook returned because other detection method active in setup");
+#endif   
+  return;//other detection method active in setup
+  }
+  
   if (cEventBlock::ReplayingRecording) //no block events on the underlying channel processed - user watches recording
   {
 #ifdef LOGGING
@@ -158,7 +164,6 @@ void cPluginBlock::MainThreadHook()
     temp_replaying_recording=false;
     dsyslog("plugin-block: replay of recording ended. Resuming detection mode.");
    }
-   return;
   }
 #endif      
 
@@ -170,6 +175,7 @@ void cPluginBlock::MainThreadHook()
 #endif
    return; //switch in progress
   }
+  
 
   const cChannel *channel=Channels.GetByNumber(channelnumber);
 
@@ -242,6 +248,7 @@ void cPluginBlock::MainThreadHook()
 #endif     
      return; //current show has already been checked
     }
+    
 #ifdef LOGGING
     dsyslog("plugin-block: new EPG title detected: '%s' - comparing with '%s'",title, cEventBlock::LastTitle);
 #endif    
