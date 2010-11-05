@@ -18,6 +18,7 @@ private:
   cEventsBlock mEventsData;  
   cSetupBlock  mSetupData;
   const char *DetectionMethods[2];
+  const char *FuzzyFallsback[2];
 
 protected:
   virtual void Store(void);
@@ -29,6 +30,7 @@ protected:
   eOSState Edit(void);
   eOSState New(void);
   eOSState Delete(void);
+  eOSState SetListProperty(void);
 
 public:
   cMenuSetupBlock();

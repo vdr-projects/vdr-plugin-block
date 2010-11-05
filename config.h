@@ -5,18 +5,22 @@
  *
  */
 
+#include <vdr/channels.h>
 #ifndef VDR_BLOCK_CONFIG_H
 #define VDR_BLOCK_CONFIG_H
 
 class cSetupBlock {
 public:
   int  HideMenuEntry;
-  int  MessageTimeout;
+  static int MessageTimeout;
   static int DetectionMethod;
-  static int LastChannel;
+  static int LastAcceptableChannel;
   static int ParentalGuidance;
   static int OkAllowed;
-  
+  static int FuzzyFallback;  
+  static char ReplayingName[256];
+  static cChannel *LastcChannel;
+  static int user_direction;
   
   cSetupBlock(void);
   bool Parse(const char *Name, const char *Value);

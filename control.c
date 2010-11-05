@@ -8,7 +8,6 @@
 #include "control.h"
 #include "config.h"
 #include "common.h"
-
 #include <vdr/remote.h>
 
 inline uint64_t BlockTimeout() { return SetupBlock.MessageTimeout * 1000; }
@@ -31,11 +30,17 @@ cControlBlock::cControlBlock(const cChannel *Channel, const cEvent *Present, con
 	needsFastResponse = true;
 #endif
 
-  cRemote::Put(kBack,true); //Hide OSD new version
+    cRemote::Put(kBack,true); //Hide OSD new version
+#ifdef LOGGING
+    dsyslog("plugin-block: constructor cControl for %i",cDevice::CurrentChannel());   
+#endif    
 }
 
 cControlBlock::~cControlBlock()
-{
+{ 
+#ifdef LOGGING
+ dsyslog("plugin-block: destructor cControl for %i",cDevice::CurrentChannel());
+#endif
 	if (mOsd != NULL)
 		delete mOsd;
         if (mRequested)
@@ -43,27 +48,35 @@ cControlBlock::~cControlBlock()
 #ifdef LOGGING
           dsyslog("plugin-block: userint user requested to watch blocked channel");
 #endif  
-          //if (mChannel!=0)
+
           if (mChannel != NULL)
           {
             cDevice::PrimaryDevice()->SwitchChannel(mChannel, true);
+            cSetupBlock::LastAcceptableChannel=mChannel->Number();
           }
           else
           {
-             //don't know if this is necessary - just taken from plugin taste
-             //seems that mChannel cannot be 0 because it is an object reference
-             //changed that to NULL
              dsyslog("plugin-block: userint Cannot switch - channel unknown!");
           }
           mRequested=false;
         }
 
 	if (mSwitch) {
-	        int lastchannel=cSetupBlock::LastChannel;
+	        int lastchannel=cSetupBlock::LastAcceptableChannel;
 		// possibly first or last available channel, fall back to old channel
 
 		if (direction == 0)
-			direction = 1;
+		{
+		 if (cSetupBlock::user_direction!=0)
+		 {
+		  direction=cSetupBlock::user_direction;
+                 }
+                 else
+                 {
+                  direction = 1;
+                 }
+                }
+                
 		if (!cDevice::SwitchChannel(direction) && (lastchannel != 0))
 			Channels.SwitchTo(lastchannel);
 
@@ -85,9 +98,6 @@ void cControlBlock::Show(void)
 
 eOSState cControlBlock::ProcessKey(eKeys Key)
 {
-#ifdef LOGGING
-	dsyslog("plugin-block: userint cControlBlock::ProcessKey(%d) this = %p", Key, this);
-#endif
 
   switch (Key) {
 
@@ -114,17 +124,19 @@ eOSState cControlBlock::ProcessKey(eKeys Key)
                 return osContinue;
                 
 	case kNone:
-#ifdef LOGGING
-dsyslog("plugin-block: userint Processing kNone (no user interaction)");
-#endif
 		if (mStart == 0)
 		{
 			Show();
                 }
-		else if (time_ms() - mStart > BlockTimeout()) {
-		direction = mChannel->Number() - cSetupBlock::LastChannel;
-			mSwitch = true;
-			return osEnd;
+		else if (time_ms() - mStart > BlockTimeout()) 
+		{
+                 #ifdef LOGGING
+                 dsyslog("plugin-block: userint Processing kNone (no user interaction)");
+                 #endif
+         	 if (cSetupBlock::user_direction ==0)direction = cDevice::CurrentChannel() -cSetupBlock::LastAcceptableChannel;
+		 else direction =0;
+                 mSwitch = true;
+		 return osEnd;
 		}
 	  return osContinue;
 
@@ -143,8 +155,8 @@ dsyslog("plugin-block: userint Processing up event (userrequest)");
 			Show();
 		else 
 		{
-		  mRequested=false;//TODO:necessary? as above
-		  direction = 1;
+		  mRequested=false;
+		 cSetupBlock::user_direction = 1;
 		  mSwitch = true;
 		  return osEnd;
 		}
@@ -165,8 +177,8 @@ dsyslog("plugin-block: userint Processing down event (userrequest)");
 			Show();
 		else 
 		{
-		  mRequested=false;//TODO:necessary? as above
-		  direction = -1;
+		  mRequested=false;
+		  cSetupBlock::user_direction = -1;
 		  mSwitch = true;
 		  return osEnd;
 		}

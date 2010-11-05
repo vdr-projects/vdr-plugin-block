@@ -11,12 +11,14 @@
 #include <vdr/status.h>
 
 class cStatusBlock : public cStatus {
+private:
 
 protected:
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
   virtual void Replaying(const cControl *Control,
                          const char *Name,
                          const char *FileName, bool On);
+  
 public:
   cStatusBlock(void);
 };
