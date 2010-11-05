@@ -61,7 +61,8 @@ cControlBlock::~cControlBlock()
           mRequested=false;
         }
 
-	if (mSwitch) {
+	if (mSwitch) 
+	{
 	        int lastchannel=cSetupBlock::LastAcceptableChannel;
 		// possibly first or last available channel, fall back to old channel
 
@@ -77,8 +78,29 @@ cControlBlock::~cControlBlock()
                  }
                 }
                 
-		if (!cDevice::SwitchChannel(direction) && (lastchannel != 0))
-			Channels.SwitchTo(lastchannel);
+                bool switch_success=cDevice::SwitchChannel(direction);
+                
+		if (!switch_success)
+		{
+		 if (cSetupBlock::ParentalGuidance==1)
+		 {
+		  direction=-direction;
+		  cSetupBlock::user_direction=direction;
+		  switch_success=cDevice::SwitchChannel(direction);
+                 }
+                 else
+                 {
+		  if (lastchannel != 0)
+		  {
+		   dsyslog("plugin-block: ERROR: Don't know where to switch - switching to last channel!");
+         	   switch_success=Channels.SwitchTo(lastchannel);
+         	  }
+                 }
+                 if (!switch_success) dsyslog("plugin-block: ERROR: Don't know where to switch - Giving up!");
+                        	  
+                }
+                 
+               
 
 	}
 }
