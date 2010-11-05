@@ -5,8 +5,6 @@
  *
  */
 
-#include <vdr/channels.h>
-
 #include "status.h"
 #include "control.h"
 #include "event.h"
@@ -24,20 +22,19 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
   int device_number=Device->DeviceNumber();
 #endif  
   
-  if (cSetupBlock::LastChannel==0)
+  if (cSetupBlock::LastAcceptableChannel==0)
   {
 #ifdef LOGGING
-    dsyslog("plugin-block: ChannelSwitch returned because LastChannel=0");
+    dsyslog("plugin-block: ChannelSwitch returned because LastAcceptableChannel=0");
 #endif    
-    cSetupBlock::LastChannel=current_channel;
+    cSetupBlock::LastAcceptableChannel=current_channel;
     return;
   }
   if (ChannelNumber==0)
   {
 #ifdef LOGGING
-    dsyslog("plugin-block: ChannelSwitch: device switching - setting LastChannel to %d",current_channel);
-#endif
-    cSetupBlock::LastChannel=current_channel;
+    dsyslog("plugin-block: ChannelSwitch returned because ChannelNumber=0 (switch in progress).");
+#endif    
     return; //Switch in progress;
   }
 
@@ -48,17 +45,9 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
   for (int ii=0;ii<cDevice::NumDevices();ii++)
   {
     cDevice* tmpdev=cDevice::GetDevice(ii);
-    dsyslog("plugin-block: cDevice %d replaying: %d, transferring %d",ii,tmpdev->Replaying(),tmpdev->Transferring());
+    dsyslog("plugin-block: cDevice %d replaying: %d, transferring %d, hasprogramme %d",ii,tmpdev->Replaying(),tmpdev->Transferring(),tmpdev->HasProgramme());
   }
 #endif
-
-  if (cSetupBlock::DetectionMethod!=0) 
-  {
-#ifdef LOGGING
-    dsyslog("plugin-block: ChannelSwitch returned because other detection method active");
-#endif
-    return;
-  }
 
   if (Device->DeviceNumber()!=cDevice::PrimaryDevice()->DeviceNumber())
   {
@@ -68,13 +57,25 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
     return;
   }
 
+
   if (ChannelNumber!=current_channel)
   {
 #ifdef LOGGING
-    dsyslog("plugin-block: Did nothing because ChannelNumber!=CurrentChannel (switch still in progress)");
+   dsyslog("plugin-block: Did nothing because ChannelNumber!=CurrentChannel (switch still in progress)");
+#endif
+
+   return;
+  }
+
+  if (cSetupBlock::DetectionMethod!=0) 
+  {
+#ifdef LOGGING
+    dsyslog("plugin-block: ChannelSwitch returned because other detection method active");
 #endif
     return;
   }
+
+
   
   if (Device->Replaying()) 
   {
@@ -119,6 +120,11 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
       dsyslog("plugin-block: channel %d blocked", ChannelNumber);
       cControl::Launch(new cControlBlock(channel, present, follow));
     }
+    else
+    {
+     cSetupBlock::LastAcceptableChannel=cDevice::CurrentChannel();
+     cSetupBlock::user_direction=0;
+    }
   }
   
 }
@@ -130,10 +136,10 @@ void cStatusBlock::Replaying(const cControl *Control,
  char *replaystate;
  if (On) replaystate=(char*)"started";
  else replaystate=(char*)"stopped";
- cEventBlock::ReplayingRecording=(bool*)On;
+ cEventBlock::ReplayingRecording=(bool*)On;//TODO put this one also into setup or better into the helper.c if ever implemented
+ if (Name!=NULL) strncpy(cSetupBlock::ReplayingName,Name,sizeof(cSetupBlock::ReplayingName));
 #ifdef LOGGING
- dsyslog("plugin-block: cStatusBlock: Replay: '%s' from '%s'",Name,FileName);
-#endif                                                                            
+ dsyslog("plugin-block: cStatusBlock: Replay: '%s' from '%s' %s",Name,FileName,replaystate);
+#endif
 }
 
-                                                                              

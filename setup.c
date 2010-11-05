@@ -28,17 +28,23 @@ void cMenuSetupBlock::Set(void) {
 
   DetectionMethods[0] = tr("On Switch");
   DetectionMethods[1] = tr("Channel EPG");
+  
+  FuzzyFallsback[0] = tr("black");
+  FuzzyFallsback[1] = tr("white");
 
   cMenuEditStraItem *methoditem = new cMenuEditStraItem(tr("Detection Method"), &mSetupData.DetectionMethod, 2, DetectionMethods);
   cMenuEditBoolItem *okitem = new cMenuEditBoolItem(tr("Ok deblocks temporarily"), &mSetupData.OkAllowed);
+  cMenuEditStraItem *whitelistitem = new cMenuEditStraItem(tr("Fuzzy fallback"), &mSetupData.FuzzyFallback, 2, FuzzyFallsback);
   
   if(cSetupBlock::ParentalGuidance==1)
   {
     methoditem->SetSelectable(false);
     okitem->SetSelectable(false);
+    whitelistitem->SetSelectable(false);
   }
   Add(methoditem);
   Add(okitem);
+  Add(whitelistitem);
   
   item = new cOsdItem("");
   item->SetSelectable(false);
@@ -48,14 +54,25 @@ void cMenuSetupBlock::Set(void) {
   item->SetSelectable(false);
   Add(item);
 
-#define NONKEYWORDITEMS 6
+#define NONKEYWORDITEMS 7
 
   int index = 0;
   cEventBlock *event = mEventsData.First();
-  while (event != NULL) {
-    Add(new cOsdItem(event->Pattern()));
-    event = mEventsData.Next(event);
-    ++index;
+  char* entry=NULL;
+  char listtype=NULL;
+  while (event != NULL) 
+  {//TODO? maybe slow as the string has to be constructed for every entry and 
+   //the method is called (?) every main thread of vdr (especially in case of a long list...)
+   //for now let's assume everyone has a cpu that's fast enough
+   //little workaround could be to take a fixed (EVMAXLINELENGTH+2) string buffer and use
+   //sprintf or something instead
+   //of course the implementation of block analysis in an extra thread would also relax this
+   if (event->isWhitelisted()) listtype='+';
+   else listtype='-';
+   asprintf(&entry,"%c:%s",listtype,event->Pattern());
+   Add(new cOsdItem(entry));
+   event = mEventsData.Next(event);
+   ++index;
   }
 
   SetCurrent(Get(current));
@@ -67,14 +84,25 @@ void cMenuSetupBlock::SetHelpKeys(void)
 {
   const char *red    = NULL;
   const char *yellow = NULL;
+  const char *blue = NULL;
 
   printf("sethelpkeys, current = %d\n", Current());
 
-  if (Current() >= NONKEYWORDITEMS) {
-	red    = trVDR("Button$Edit");
-	yellow = trVDR("Button$Delete");
+  if (Current() >= NONKEYWORDITEMS) 
+  {
+   red    = trVDR("Button$Edit");
+   if (cSetupBlock::ParentalGuidance!=1)
+   {
+    yellow = trVDR("Button$Delete");
+    blue = trVDR("Button$+/-");
+   }
   }
-  SetHelp(red, trVDR("Button$New"), yellow, NULL);
+  if(cSetupBlock::ParentalGuidance!=1)
+  {
+   SetHelp(red, trVDR("Button$New"), yellow, blue);
+  }
+  else
+   SetHelp(red,trVDR("Button$New"));
 }
 
 void cMenuSetupBlock::Store(void) 
@@ -88,6 +116,8 @@ void cMenuSetupBlock::Store(void)
   SetupStore("MessageTimeout", SetupBlock.MessageTimeout);
   SetupStore("DetectionMethod", SetupBlock.DetectionMethod);
   SetupStore("OkAllowed", SetupBlock.OkAllowed);
+  SetupStore("FuzzyFallback", SetupBlock.FuzzyFallback);
+  cEventBlock::LastTitle=(char*)"force recheck from setup"; 
 }
 
 eOSState cMenuSetupBlock::Edit(void)
@@ -95,9 +125,22 @@ eOSState cMenuSetupBlock::Edit(void)
   if (HasSubMenu() || Current() < NONKEYWORDITEMS)
     return osContinue;
 
+
   cEventBlock *event = mEventsData.Get(Current() - NONKEYWORDITEMS);
   if (event != NULL)
-    return AddSubMenu(new cMenuSetupEditBlock(event));
+  {
+   if (cSetupBlock::ParentalGuidance==1 && strcmp(event->Pattern(),tr("New Entry"))!=0)
+   {
+    Skins.Message(mtError, tr("Permission denied!"));
+    dsyslog("plugin-block: Parental guidance detected attempt to edit another than a new entry. Permission denied!");
+    return osContinue;
+   }
+   eOSState retval= AddSubMenu(new cMenuSetupEditBlock(event));
+   EventsBlock = mEventsData;
+   EventsBlock.Sort();
+   EventsBlock.Save();        
+   return retval;
+  }   
   return osContinue;
 }
 
@@ -105,12 +148,37 @@ eOSState cMenuSetupBlock::New(void)
 {
   if (HasSubMenu())
     return osContinue;
-
-  mEventsData.Add(new cEventBlock());
+      
+  cEventBlock* dummy1=new cEventBlock();
+  if(mEventsData.hasStringMatch(dummy1->Pattern(),true)!=NULL)
+  {
+   Set();
+   SetCurrent(Get (NONKEYWORDITEMS + mEventsData.getIndexOf(dummy1)));
+   delete(dummy1);
+   return osContinue;
+  }
+  mEventsData.Add(dummy1);
   Set();
+  SetCurrent(Get(NONKEYWORDITEMS + mEventsData.getIndexOf(dummy1)));
   return osContinue;
 }
 
+eOSState cMenuSetupBlock::SetListProperty(void)
+{
+  if (HasSubMenu() || Current() < NONKEYWORDITEMS)
+    return osContinue;
+  
+  cEventBlock *event = mEventsData.Get(Current() - NONKEYWORDITEMS);
+  if (event != NULL)
+  {
+   event->setWhitelisted(!(event->isWhitelisted()));
+   EventsBlock = mEventsData;
+   EventsBlock.Save();        
+  }   
+  return osContinue;
+}
+
+  
 eOSState cMenuSetupBlock::Delete(void)
 {
   if (HasSubMenu() || Current() < NONKEYWORDITEMS)
@@ -119,41 +187,53 @@ eOSState cMenuSetupBlock::Delete(void)
   cEventBlock *event = mEventsData.Get(Current() - NONKEYWORDITEMS);
   if (event != NULL) {
 	if (Interface->Confirm(tr("Delete keyword?")))
-	  mEventsData.Del(event);
+	  {
+	   mEventsData.Del(event,true);
+           EventsBlock = mEventsData;
+           EventsBlock.Save();
+	   
+	  }
   }
   Set();
   return osContinue;
 }
 
-eOSState cMenuSetupBlock::ProcessKey(eKeys Key) {
-  bool hadSubMenu = HasSubMenu();
-  eOSState state = cMenuSetupPage::ProcessKey(Key);
+eOSState cMenuSetupBlock::ProcessKey(eKeys Key) 
+{
+ bool hadSubMenu = HasSubMenu();
+ eOSState state = cMenuSetupPage::ProcessKey(Key);
 
-  if (hadSubMenu && !HasSubMenu()) {
-		Set();
-		return state;
-  }
+ if (hadSubMenu && !HasSubMenu()) 
+ {
+  Set();
+  return state;
+ }
 
-  switch (state) {
-  case osUnknown: // normal key handling
-    switch (Key) {
-    case kRed:    if (mSetupData.ParentalGuidance!=1) return Edit();
-                  break;
-    case kGreen:  if (mSetupData.ParentalGuidance!=1) return New();
-                  break;
-    case kYellow: if (mSetupData.ParentalGuidance!=1) return Delete();
-                  break;
-    default:
-      break;
+  switch (state) 
+  {
+   case osUnknown: // normal key handling
+    switch (Key) 
+    {
+     case kRed:    return Edit();
+                   break;
+     case kGreen:  return New();
+                   break;
+     case kYellow: if (mSetupData.ParentalGuidance!=1) return Delete();
+                   break;
+     case kBlue:   if (mSetupData.ParentalGuidance!=1) return SetListProperty();
+
+     default:    
+                   break;
     }
+
     break;
 
-  default:
-    break;
+   default:
+                  break;
   }
 	
-	if (!HasSubMenu())
-		Set();
+  if (!HasSubMenu())
+      Set();
 
   return state;
 }
@@ -165,12 +245,16 @@ cMenuSetupEditBlock::cMenuSetupEditBlock(cEventBlock *Event):
     mEvent(Event),
     mData(*Event)
 {
-  char buf[80];
-  snprintf(buf, sizeof(buf), "%s - %s '%s'", trVDR("Setup"), trVDR("Plugin"), "block");
-  SetTitle(buf);
-  Add(new cMenuEditStrItem(tr("Pattern"), mData.mPattern, sizeof(mData.mPattern), tr(ALLOWEDCHARS)));
-	Add(new cMenuEditBoolItem(tr("Regular Expression"), &mData.mRegularExp));
-	Add(new cMenuEditBoolItem(tr("Ignore Case"), &mData.mIgnoreCase));
+ char buf[80];
+ snprintf(buf, sizeof(buf), "%s - %s '%s'", trVDR("Setup"), trVDR("Plugin"), "block");
+ SetTitle(buf);
+ Add(new cMenuEditStrItem(tr("Pattern"), mData.mPattern, sizeof(mData.mPattern), tr(ALLOWEDCHARS)));
+ Add(new cMenuEditBoolItem(tr("Regular Expression"), &mData.mRegularExp));
+ if (cSetupBlock::ParentalGuidance!=1)
+ {
+  Add(new cMenuEditBoolItem(tr("Ignore Case"), &mData.mIgnoreCase));
+  Add(new cMenuEditBoolItem(tr("Whitelist"), &mData.whitelisted));
+ }
 }
 
 eOSState cMenuSetupEditBlock::ProcessKey(eKeys Key)
@@ -180,19 +264,30 @@ eOSState cMenuSetupEditBlock::ProcessKey(eKeys Key)
   if (state == osUnknown) {
     switch (Key) {
     case kOk:
-			if (!mData.Compile()) {
-				Skins.Message(mtError, tr("Malformed regular expression!"));
-				state = osContinue;
-			} else {
-				*mEvent = mData;
-				state = osBack;
+			if (!mData.Compile()) 
+			{
+			 Skins.Message(mtError, tr("Malformed regular expression!"));
+			 state = osContinue;
+			} 
+			else 
+			{
+			 if(EventsBlock.hasStringMatch(mData.Pattern(),true)!=NULL && (strcmp(mEvent->Pattern(),mData.Pattern())!=0))
+			 {
+			  Skins.Message(mtError, tr("Please edit duplicate instead"));
+			  state=osBack;
+			 }
+			 else
+			 {
+			  *mEvent = mData;
+			  state = osBack;
+
+			 }
 			}
-      break;
+                        break;
 
     default:
       break;
     }
   }
-  EventsBlock.Sort();
   return state;
 }

@@ -8,9 +8,6 @@
 #ifndef VDR_BLOCK_COMMON_H
 #define VDR_BLOCK_COMMON_H
 
-#include <stdint.h>
-#include <vdr/tools.h>
-
 #if VDRVERSNUM >= 10318
 inline uint64_t time_ms() { return cTimeMs::Now(); }
 #endif

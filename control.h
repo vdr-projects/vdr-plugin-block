@@ -8,7 +8,6 @@
 #ifndef VDR_BLOCK_CONTROL_H
 #define VDR_BLOCK_CONTROL_H
 
-#include <stdint.h>
 #include <vdr/player.h>
 
 class cControlBlock : public cControl {
