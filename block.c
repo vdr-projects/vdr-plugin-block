@@ -20,7 +20,7 @@
 using namespace std;
 
 
-static const char *VERSION        = "0.1.0";
+static const char *VERSION        = "0.1.0a";
 static const char *DESCRIPTION    = trNOOP("Block unwanted shows by EPG title");
 static const char *MAINMENUENTRY  = trNOOP("(De)Block broadcast");
 
@@ -283,7 +283,7 @@ void cPluginBlock::MainThreadHook()
   }
   #endif
   channelnumber=cDevice::CurrentChannel();
-  if (channelnumber==0)
+  if (channelnumber==0) //TODO last check revealed this possibly would never be true because ChannelSwitch handles it?
   {
   #ifdef LOGGING
    dsyslog("plugin-block: Channel number is 0 => Channel switch on primary device");
@@ -347,7 +347,7 @@ void cPluginBlock::MainThreadHook()
      if (strcmp(temp_string,has_been_checked_string)!=0)
      {
       dsyslog("plugin-block: %s",temp_string); //outputs: 'bla' has already been checked
-      has_been_checked_string=temp_string; 
+      has_been_checked_string=temp_string; //TODO a bool may increase performance
      }
      #endif     
      return; //current show has already been checked

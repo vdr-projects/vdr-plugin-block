@@ -61,7 +61,8 @@ cControlBlock::~cControlBlock()
           mRequested=false;
         }
 
-	if (mSwitch) {
+	if (mSwitch) 
+	{
 	        int lastchannel=cSetupBlock::LastAcceptableChannel;
 		// possibly first or last available channel, fall back to old channel
 
@@ -73,12 +74,33 @@ cControlBlock::~cControlBlock()
                  }
                  else
                  {
-                  direction = 1;
+                  direction = 1; //TODO could there be another way to switch somewhere if directions are 0?
                  }
                 }
                 
-		if (!cDevice::SwitchChannel(direction) && (lastchannel != 0))
-			Channels.SwitchTo(lastchannel);
+                bool switch_success=cDevice::SwitchChannel(direction);
+                
+		if (!switch_success)
+		{
+		 if (cSetupBlock::ParentalGuidance==1)
+		 {
+		  direction=-direction;
+		  cSetupBlock::user_direction=direction;
+		  switch_success=cDevice::SwitchChannel(direction);
+                 }
+                 else
+                 {
+		  if (lastchannel != 0)
+		  {
+		   dsyslog("plugin-block: ERROR: Don't know where to switch - switching to last channel!");
+         	   switch_success=Channels.SwitchTo(lastchannel);
+         	  }
+                 }
+                 if (!switch_success) dsyslog("plugin-block: ERROR: Don't know where to switch - Giving up!");
+                        	  
+                }
+                 
+               
 
 	}
 }
@@ -134,7 +156,7 @@ eOSState cControlBlock::ProcessKey(eKeys Key)
                  dsyslog("plugin-block: userint Processing kNone (no user interaction)");
                  #endif
          	 if (cSetupBlock::user_direction ==0)direction = cDevice::CurrentChannel() -cSetupBlock::LastAcceptableChannel;
-		 else direction =0;
+		 else direction =0; //TODO cleanup this direction chaos (doubleset and doublechecked here and there...)
                  mSwitch = true;
 		 return osEnd;
 		}
@@ -155,7 +177,7 @@ dsyslog("plugin-block: userint Processing up event (userrequest)");
 			Show();
 		else 
 		{
-		  mRequested=false;
+		  mRequested=false;//TODO:necessary? as above
 		 cSetupBlock::user_direction = 1;
 		  mSwitch = true;
 		  return osEnd;
@@ -177,7 +199,7 @@ dsyslog("plugin-block: userint Processing down event (userrequest)");
 			Show();
 		else 
 		{
-		  mRequested=false;
+		  mRequested=false;//TODO:necessary? as above
 		  cSetupBlock::user_direction = -1;
 		  mSwitch = true;
 		  return osEnd;
