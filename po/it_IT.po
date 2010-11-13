@@ -10,9 +10,9 @@ msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdrportal_midas at gmx dot de>\n"
 "POT-Creation-Date: 2010-11-05 00:55+0100\n"
-"PO-Revision-Date: 2010-11-05 00:53+0100\n"
-"Last-Translator: Sean Carlos <seanc@libero.it>\n"
-"Language-Team: <vdr@linuxtv.org>\n"
+"PO-Revision-Date: 2010-11-06 19:52+0100\n"
+"Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
+"Language-Team:  <vdr@linuxtv.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,7 +36,7 @@ msgid "Hide Mainmenu Entry"
 msgstr "Nascondi voce menu principale"
 
 msgid "Message Timeout [s]"
-msgstr ""
+msgstr "Scadenza messaggio [s]"
 
 msgid "On Switch"
 msgstr "Al cambio canale"
@@ -45,10 +45,10 @@ msgid "Channel EPG"
 msgstr "Canale EPG"
 
 msgid "black"
-msgstr ""
+msgstr "nega"
 
 msgid "white"
-msgstr ""
+msgstr "autorizza"
 
 msgid "Detection Method"
 msgstr "Metodo rilevamento"
@@ -57,10 +57,10 @@ msgid "Ok deblocks temporarily"
 msgstr "Permetti sblocchi temporanei"
 
 msgid "Fuzzy fallback"
-msgstr ""
+msgstr "Ripristina"
 
 msgid "--- Keywords -------------------------------------------------------------------"
-msgstr "--- Parole chiave---------------------------------------------------------------"
+msgstr "--- Parole chiave --------------------------------------------------------------"
 
 msgid "Delete keyword?"
 msgstr "Eliminare parola chiave?"
@@ -75,10 +75,11 @@ msgid "Ignore Case"
 msgstr "Ignora maiuscole/minuscole"
 
 msgid "Whitelist"
-msgstr ""
+msgstr "Elenco autorizzati"
 
 msgid "Malformed regular expression!"
 msgstr "Espressione regolare mal costruita!"
 
 msgid "Please edit duplicate instead"
-msgstr ""
+msgstr "Modifica invece i duplicati"
+

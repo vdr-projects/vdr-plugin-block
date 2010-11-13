@@ -510,7 +510,7 @@ const tI18nPhrase Phrases[] = {
   { "Message Timeout [s]",
     "Wartezeit bis Umschalten [s]",
     "",
-    "",//maybe someone could help out?
+    "Scadenza messaggio [s]",
     "",
     "",
     "",
@@ -535,7 +535,7 @@ const tI18nPhrase Phrases[] = {
   { "Fuzzy fallback",
     "Unschärfepriorität",
     "",
-    "",//maybe someone could help out?
+    "Ripristina",
     "",
     "",
     "",
@@ -560,7 +560,7 @@ const tI18nPhrase Phrases[] = {
   { "black",
     "gesperrt",
     "",
-    "",//maybe someone could help out?
+    "nega",
     "",
     "",
     "",
@@ -585,7 +585,7 @@ const tI18nPhrase Phrases[] = {
   { "white",
     "nicht gesperrt",
     "",
-    "",//maybe someone could help out?
+    "autorizza",
     "",
     "",
     "",
@@ -610,7 +610,7 @@ const tI18nPhrase Phrases[] = {
   { "Please edit duplicate instead",
     "Bitte vorhandenen Eintrag editieren",
     "",
-    "",//maybe someone could help out?
+    "Modifica invece i duplicati",
     "",
     "",
     "",
