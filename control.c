@@ -79,7 +79,7 @@ cControlBlock::~cControlBlock()
                 }
                 
                 bool switch_success=cDevice::SwitchChannel(direction);
-                dsyslog("plugin-block-DEV: direction %i, user_direction %i, lastchannel %i, cSetupBlock::lastchannel %i, lastcchannel %s", direction, cSetupBlock::user_direction,lastchannel,cSetupBlock::LastAcceptableChannel, cSetupBlock::LastcChannel->Name());
+//                dsyslog("plugin-block-DEV: direction %i, user_direction %i, lastchannel %i, cSetupBlock::lastchannel %i, lastcchannel %s", direction, cSetupBlock::user_direction,lastchannel,cSetupBlock::LastAcceptableChannel, cSetupBlock::LastcChannel->Name());
 		if (!switch_success)
 		{
 		 if (cSetupBlock::ParentalGuidance==1)
