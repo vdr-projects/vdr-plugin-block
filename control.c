@@ -79,7 +79,7 @@ cControlBlock::~cControlBlock()
                 }
                 
                 bool switch_success=cDevice::SwitchChannel(direction);
-                
+//                dsyslog("plugin-block-DEV: direction %i, user_direction %i, lastchannel %i, cSetupBlock::lastchannel %i, lastcchannel %s", direction, cSetupBlock::user_direction,lastchannel,cSetupBlock::LastAcceptableChannel, cSetupBlock::LastcChannel->Name());
 		if (!switch_success)
 		{
 		 if (cSetupBlock::ParentalGuidance==1)
@@ -92,16 +92,26 @@ cControlBlock::~cControlBlock()
                  {
 		  if (lastchannel != 0)
 		  {
-		   dsyslog("plugin-block: ERROR: Don't know where to switch - switching to last channel!");
+		   dsyslog("plugin-block: ERROR: Don't know where to switch (1) - switching to last channel!");
          	   switch_success=Channels.SwitchTo(lastchannel);
          	  }
                  }
-                 if (!switch_success) dsyslog("plugin-block: ERROR: Don't know where to switch - Giving up!");
-                        	  
+                 if (!switch_success) 
+                 {
+                  dsyslog("plugin-block: ERROR: Don't know where to switch (2) - changing direction!");
+                  direction=-direction;
+                  cSetupBlock::user_direction=direction;
+                  switch_success=cDevice::SwitchChannel(direction);
+                  
+                 }
+                 if (!switch_success)
+                 {
+                  dsyslog("plugin-block: ERROR: Dont' know where to switch (3) - final fallback to channel 1/direction up!");
+                  cSetupBlock::user_direction=1;
+                  switch_success=Channels.SwitchTo(1);
+                 }
+                 if (!switch_success) dsyslog("plugin-block: Don't know where to switch (4) - Giving up! Please contact the author.");
                 }
-                 
-               
-
 	}
 }
 
