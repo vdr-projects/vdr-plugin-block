@@ -134,8 +134,10 @@ void cStatusBlock::Replaying(const cControl *Control,
                                       const char *FileName, bool On)
 {
  char *replaystate;
+#ifdef LOGGING
  if (On) replaystate=(char*)"started";
  else replaystate=(char*)"stopped";
+#endif
  cEventBlock::ReplayingRecording=(bool*)On;
  if (Name!=NULL) strncpy(cSetupBlock::ReplayingName,Name,sizeof(cSetupBlock::ReplayingName));
 #ifdef LOGGING
@@ -143,3 +145,16 @@ void cStatusBlock::Replaying(const cControl *Control,
 #endif
 }
 
+void cStatusBlock::OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle)
+{
+/*  char buffer[25];
+  struct tm tm_r;
+  dsyslog("status: cStatusBlock::OsdProgramme");
+  strftime(buffer, sizeof(buffer), "%R", localtime_r(&PresentTime, &tm_r));
+  dsyslog("%5s %s", buffer, PresentTitle);
+  dsyslog("%5s %s", "", PresentSubtitle);
+  strftime(buffer, sizeof(buffer), "%R", localtime_r(&FollowingTime, &tm_r));
+  dsyslog("%5s %s", buffer, FollowingTitle);
+  dsyslog("%5s %s", "", FollowingSubtitle);
+*/
+}

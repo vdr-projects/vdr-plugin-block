@@ -632,6 +632,31 @@ const tI18nPhrase Phrases[] = {
     "",
 #endif
   },
+  { "DVB rating",
+    "Altersfreigabe (DVB)",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+#if VDRVERSNUM >= 10313
+    "",
+#endif
+#if VDRVERSNUM >= 10316
+    "",
+#endif
+  },
 	{ NULL }
 };
 

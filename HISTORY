@@ -1,6 +1,17 @@
 VDR Plugin 'block' Revision History
 -----------------------------------
 
+2012/04/03: Version 0.1.2
+Bugfix:
+  -Joe_D sent a patch which exposes myself coding JAVA for too long.
+   Several memory leaks and issues have been fixed. Thank you Joe_D.
+Features:
+  -The plugin now may take care of age rating information derived from
+   the DVB stream as suggested by Grindo. See 'DVB rating' in the plugins
+   setup and README for more information.
+
+
+**************************************************************************
 2010/11/12: Version 0.1.1
 Bugfix:
   -In some cases plugin wrongly switched to a blacklisted channel, if all

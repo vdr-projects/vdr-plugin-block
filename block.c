@@ -11,6 +11,7 @@
 
 #include <vdr/plugin.h>
 #include <vdr/menu.h>
+#include <libsi/descriptor.h>
 
 #include "status.h"
 #include "setup.h"
@@ -19,8 +20,7 @@
 #include <fstream>
 using namespace std;
 
-
-static const char *VERSION        = "0.1.1";
+static const char *VERSION        = "0.1.2";
 static const char *DESCRIPTION    = trNOOP("Block unwanted shows by EPG title");
 static const char *MAINMENUENTRY  = trNOOP("(De)Block broadcast");
 
@@ -107,6 +107,7 @@ bool cPluginBlock::Initialize(void)
     outfile<<infile.rdbuf();
     infile.close();
     outfile.close();
+    free((void *) source_file);
    }
   }
 
@@ -122,6 +123,10 @@ bool cPluginBlock::Initialize(void)
     outfile<<infile.rdbuf();
     infile.close();
     outfile.close();
+    free((void *)blacklist_path);
+    free((void *)blacklist_file); 
+    free((void *) backup_file);
+
    }
   }
   
@@ -142,6 +147,8 @@ bool cPluginBlock::Initialize(void)
     EventsBlock.Del(listptr->Next(),true);
     continue;
    }
+   free((void *)src);
+   free((void *)cmp);
    listptr=EventsBlock.Next(listptr);
   }
 
@@ -184,7 +191,7 @@ cOsdObject *cPluginBlock::MainMenuAction(void)
 
 
 
-    if (!acceptable && cSetupBlock::ParentalGuidance)//TODO check if works
+    if (!acceptable && cSetupBlock::ParentalGuidance)
     {
      dsyslog("plugin-block: Parental Guidance: Attempt to deblock '%s' from main menu! Permission denied!",current_title);
      cSkinDisplayChannel* mOsd = Skins.Current()->DisplayChannel(true);
@@ -305,6 +312,7 @@ void cPluginBlock::MainThreadHook()
   const char* title=NULL;
   const cEvent *present=NULL;
   const cEvent *follow=NULL;
+  const char* description=NULL;
   if (channel != NULL && !channel->GroupSep())
   {
   /*//only for debugging purposes:
@@ -337,7 +345,10 @@ void cPluginBlock::MainThreadHook()
     }
    }
   }
-  if (title==NULL) title="";
+  if (title==NULL) title="";//TODO this means even if title is NULL the whole procedure of verifying is being done
+                            //absolutely unnecessary! if NULL && PR just block! otherwise do not!
+                            //except if PR && rating check rating and then decide
+                            //the following check still must stay included as it detects new titles !!!!!
 
     if (strcmp(title,cEventBlock::LastTitle)==0) 
     {
@@ -357,12 +368,34 @@ void cPluginBlock::MainThreadHook()
     cSetupBlock::LastcChannel=(cChannel*)channel;
     
     
-    
+        
     #ifdef LOGGING
     dsyslog("plugin-block: new EPG title detected: '%s' - comparing with '%s'",title, cEventBlock::LastTitle);
-    #endif    
+    #endif
+    
+    int rating=-1;//in case VDRVERSNUM is < 10711 this being <0 makes sure we do not run into complications see below
+    if (present==NULL) description="present event is null. No info from EPG.";
+    else 
+    {
+     description=present->Description();
+#if VDRVERSNUM>10711
+     rating=present->ParentalRating();
+     dsyslog ("plugin-block: detected Rating: %i",rating);
+#endif
+    }
+    
     cEventBlock::LastTitle=(char*)title;
-    if (!EventsBlock.Acceptable(title))
+    if (rating<1) rating=100; // Unfortunately most of the channels do not broadcast valuable rating information
+                               // eg Sesamy Street would of course be ok to have a rating of 0
+                               // but lots of adult shows and so forth also are broadcasted with rating 0 :/
+                               // so we only explicitly check ratings > 0
+                               // if ParentalGuidance is active
+                               // this gives us another few shows which are deblocked automatically
+                               // hopefully the ratings > 0 are broadcasted correctly btw 
+                               // two rating states are checked here:
+                               // 0  means sent by broadcaster
+                               // -1 the initial value; may still be set if there is no epg etc
+    if ((VDRVERSNUM > 10710 && cSetupBlock::ParentalGuidance > 0 && cSetupBlock::DVBRating < rating ) || !EventsBlock.Acceptable(title))
     {
      dsyslog("plugin-block: channel %i blocked", channelnumber);
 

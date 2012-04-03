@@ -101,7 +101,9 @@ bool cEventBlock::Parse(char *s)
 {
  char *patternbuf=NULL;
  int fields=sscanf(s,"%d:%d:%a[^\n]", &mRegularExp, &mIgnoreCase, &patternbuf);
- 
+
+ if (!patternbuf) return true; 
+
  if (fields==3)
  {
   strncpy(mPattern,patternbuf,sizeof(mPattern));
@@ -281,6 +283,11 @@ void cEventsBlock::ListMatches(const char *title, cVector <cEventBlock*> *match_
 #endif      
       stringmatch=*event;
      }
+     if (event->IgnoreCase())
+     {
+       free(temp_title);
+       free(temp_pattern);
+     }
     }
     event = Next(event);
   }
@@ -351,4 +358,4 @@ int cEventsBlock::getIndexOf(cEventBlock *src)
  }
  return -1;
 }
-                            
+

@@ -18,6 +18,7 @@ protected:
   virtual void Replaying(const cControl *Control,
                          const char *Name,
                          const char *FileName, bool On);
+  virtual void OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle);  
   
 public:
   cStatusBlock(void);

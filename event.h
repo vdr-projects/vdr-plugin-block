@@ -55,9 +55,11 @@ public:
   virtual int Compare(const cListObject &src) const 
   {
    cEventBlock* rhs=(cEventBlock*)&src;
-   char* l=cEventBlock::duptolower(mPattern);
-   char* r=cEventBlock::duptolower(rhs->mPattern);
-   return strcmp(l,r); }//TODO check if the code relies on this because in fact we have to return !strcmp(r,l) here!!!
+   char* l=duptolower(mPattern);
+   char* r=duptolower(rhs->mPattern);
+   int ret=strcmp(l,r);
+   free(l); free(r);
+   return ret; }//TODO check if the code relies on this because in fact we have to return !strcmp(r,l) here!!!
 };
 
 class cEventsBlock : public cConfig<cEventBlock> {

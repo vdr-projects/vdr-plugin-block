@@ -116,6 +116,25 @@ Fuzzy Fallback: As of version 0.1.0 whitelisting function was added which
                 the plugin falls back to the value fo Fuzzy Fallback which
                 could be set to black or white.
 
+DVB rating: As of version 0.1.2 the block plugins Parental Guidance mode
+            can verify against the Parental Rating stream information sent
+            by the broadcaster. Unfortunately this information seems not
+            to be very reliable as most stations have the value set to 0
+            (at least here in Germany and on DVB-S/T), which would be ok 
+            for lets say Sesamy Street but not for action movies or even 
+            the news depending on your point of view. That said the 
+            current implementation only takes care of values > 0.
+            
+            So the actual benefit of block taking care of the streams 
+            rating information is that it will block every show with a
+            rating < 1 and additionally deblock shows that are broadcasted
+            with valid rating information (ie > 0) and the value being
+            lower than 'DVB rating' in the plugins setup.
+
+            Setting the value to 0 means disabled.
+
+            NOTE: DVB rating requires at least VDR 1.7.11.
+
 
 Parental Guidance Setup 
 (Experimental as of version 0.0.2+dev):
@@ -125,8 +144,8 @@ First of all: I can't guarantee a perfectly failsafe childprotection.
               Feel free to test the Parental Guidance config at your
               own risk but don't forget, that it is you not me who
               takes care of your children. Nevertheless the method
-              used by the plugin should work quite good, as long as
-              the stations are updating their epg signal in sync
+              used by the plugin should work quite well, as long as
+              the stations are updating their epg information in sync
               with the current show.
 
 How to: Several prerequisites have to be configured in the plugins
@@ -146,15 +165,16 @@ How to: Several prerequisites have to be configured in the plugins
         (again with vdr being stopped) or by removing the row from
         setup.conf.
         
-        Setting ParentalGuidance to 1 overrides three other setup
+        Setting ParentalGuidance to 1 overrides four other setup
         options: 'Detection Method' is set to 'Channel EPG',
-        'Ok deblocks temporarily' is set to 'No' and 'Fuzzy fallback'
-        is set to 'black', as obviously other settings would undermine 
-        Parental Guidance mode. Furthermore the color keys yellow
-        (Delete) and blue (switch black/white) are deactivated in the
-        plugins setup. Editing is only allowed for new entries, for 
-        which you are only allowed to change the pattern and to set
-        regular expression mode.
+        'Ok deblocks temporarily' is set to 'No', 'Fuzzy fallback'
+        is set to 'black' and DVB rating becomes deactivated,  as 
+        other settings obviously would undermine Parental Guidance 
+        mode. Furthermore the color keys yellow (Delete) and blue 
+        (switch black/white) are deactivated in the plugins setup. 
+        Editing is only allowed for new entries, for which you are 
+        only allowed to change the pattern and to set regular 
+        expression mode.
         
 
 

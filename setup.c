@@ -35,17 +35,21 @@ void cMenuSetupBlock::Set(void) {
   cMenuEditStraItem *methoditem = new cMenuEditStraItem(tr("Detection Method"), &mSetupData.DetectionMethod, 2, DetectionMethods);
   cMenuEditBoolItem *okitem = new cMenuEditBoolItem(tr("Ok deblocks temporarily"), &mSetupData.OkAllowed);
   cMenuEditStraItem *whitelistitem = new cMenuEditStraItem(tr("Fuzzy fallback"), &mSetupData.FuzzyFallback, 2, FuzzyFallsback);
+  cMenuEditIntItem *dvbratingitem = new cMenuEditIntItem(tr("DVB rating"), &mSetupData.DVBRating,0,21);
+//  cMenuEditIntItem *ratingitem = new cMenuEditIntItem(tr("Rating"), &mSetupData.Rating, 0, 21));
   
   if(cSetupBlock::ParentalGuidance==1)
   {
     methoditem->SetSelectable(false);
     okitem->SetSelectable(false);
     whitelistitem->SetSelectable(false);
+    dvbratingitem->SetSelectable(false);
   }
   Add(methoditem);
   Add(okitem);
   Add(whitelistitem);
-  
+  Add(dvbratingitem);
+//TODO translation, setup menü einrichten ->define mit if versehen für ein/ausblenden von options? variablen deklarieren  
   item = new cOsdItem("");
   item->SetSelectable(false);
   Add(item);
@@ -54,7 +58,7 @@ void cMenuSetupBlock::Set(void) {
   item->SetSelectable(false);
   Add(item);
 
-#define NONKEYWORDITEMS 7
+#define NONKEYWORDITEMS 8
 
   int index = 0;
   cEventBlock *event = mEventsData.First();
@@ -112,6 +116,7 @@ void cMenuSetupBlock::Store(void)
   SetupStore("DetectionMethod", SetupBlock.DetectionMethod);
   SetupStore("OkAllowed", SetupBlock.OkAllowed);
   SetupStore("FuzzyFallback", SetupBlock.FuzzyFallback);
+  SetupStore("DVBRating", SetupBlock.DVBRating);
   cEventBlock::LastTitle=(char*)"force recheck from setup"; 
 }
 

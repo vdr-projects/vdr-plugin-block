@@ -18,6 +18,7 @@ public:
   static int ParentalGuidance;
   static int OkAllowed;
   static int FuzzyFallback;  
+  static int DVBRating;
   static char ReplayingName[256];
   static cChannel *LastcChannel;
   static int user_direction;
