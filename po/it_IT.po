@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdrportal_midas at gmx dot de>\n"
-"POT-Creation-Date: 2012-03-29 07:01+0200\n"
+"POT-Creation-Date: 2012-04-18 18:12+0200\n"
 "PO-Revision-Date: 2010-11-06 19:52+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team:  <vdr@linuxtv.org>\n"
@@ -60,6 +60,9 @@ msgstr "Permetti sblocchi temporanei"
 msgid "Fuzzy fallback"
 msgstr "Ripristina"
 
+msgid "DVB rating"
+msgstr "DVB rating"
+
 msgid "--- Keywords -------------------------------------------------------------------"
 msgstr "--- Parole chiave --------------------------------------------------------------"
 
@@ -83,6 +86,3 @@ msgstr "Espressione regolare mal costruita!"
 
 msgid "Please edit duplicate instead"
 msgstr "Modifica invece i duplicati"
-
-msgid "DVB rating"
-msgstr "DVB rating"

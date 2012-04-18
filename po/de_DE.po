@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 1.5.7\n"
 "Report-Msgid-Bugs-To: <vdrportal_midas at gmx dot de>\n"
-"POT-Creation-Date: 2012-03-29 07:01+0200\n"
+"POT-Creation-Date: 2012-04-18 18:12+0200\n"
 "PO-Revision-Date: 2010-11-05 00:53+0100\n"
 "Last-Translator: Klaus Schmidinger <kls@cadsoft.de>\n"
 "Language-Team: <vdr@linuxtv.org>\n"
@@ -58,6 +58,9 @@ msgstr "Ok entsperrt temporär"
 msgid "Fuzzy fallback"
 msgstr "Unschärfepriorität"
 
+msgid "DVB rating"
+msgstr "Altersfreigabe (DVB)"
+
 msgid "--- Keywords -------------------------------------------------------------------"
 msgstr "--- Schlagworte ----------------------------------------------------------------"
 
@@ -81,6 +84,3 @@ msgstr "Ungültiger regulärer Ausdruck!"
 
 msgid "Please edit duplicate instead"
 msgstr "Bitte vorhandenen Eintrag editieren"
-
-msgid "DVB rating"
-msgstr "Altersfreigabe (DVB)"

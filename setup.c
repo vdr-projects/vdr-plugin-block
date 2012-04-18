@@ -45,6 +45,7 @@ void cMenuSetupBlock::Set(void) {
     whitelistitem->SetSelectable(false);
     dvbratingitem->SetSelectable(false);
   }
+  if (VDRVERSNUM < 10711) dvbratingitem->SetSelectable(false); //TODO: make the options just not appear if vdr < 1.7.11!!!!
   Add(methoditem);
   Add(okitem);
   Add(whitelistitem);
