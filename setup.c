@@ -45,11 +45,10 @@ void cMenuSetupBlock::Set(void) {
     whitelistitem->SetSelectable(false);
     dvbratingitem->SetSelectable(false);
   }
-  if (VDRVERSNUM < 10711) dvbratingitem->SetSelectable(false); //TODO: make the options just not appear if vdr < 1.7.11!!!!
   Add(methoditem);
   Add(okitem);
   Add(whitelistitem);
-  Add(dvbratingitem);
+  if (VDRVERSNUM < 10711)  Add(dvbratingitem);
 //TODO translation, setup menü einrichten ->define mit if versehen für ein/ausblenden von options? variablen deklarieren  
   item = new cOsdItem("");
   item->SetSelectable(false);
@@ -59,7 +58,11 @@ void cMenuSetupBlock::Set(void) {
   item->SetSelectable(false);
   Add(item);
 
+#if VDRVERSNUM<10711
+#define NONKEYWORDITEMS 7
+#else
 #define NONKEYWORDITEMS 8
+#endif
 
   int index = 0;
   cEventBlock *event = mEventsData.First();
