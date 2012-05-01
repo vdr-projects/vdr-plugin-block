@@ -14,8 +14,11 @@ cStatusBlock::cStatusBlock(void):
     cStatus()
 {
 }
-
+#if VDRVERSNUM < 10726
 void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
+#else
+void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView)
+#endif
 {
   int current_channel=cDevice::CurrentChannel();
 #ifdef LOGGING
@@ -49,7 +52,11 @@ void cStatusBlock::ChannelSwitch(const cDevice *Device, int ChannelNumber)
   }
 #endif
 
+#if VDRVERSNUM < 10726
   if (Device->DeviceNumber()!=cDevice::PrimaryDevice()->DeviceNumber())
+#else
+  if (!LiveView)
+#endif
   {
 #ifdef LOGGING
     dsyslog("plugin-block: Did nothing cause ChannelSwitch not on active livedevice.");

@@ -20,7 +20,7 @@
 #include <fstream>
 using namespace std;
 
-static const char *VERSION        = "0.1.2~201204240222dev";
+static const char *VERSION        = "0.1.2~201205010137dev";
 static const char *DESCRIPTION    = trNOOP("Block unwanted shows by EPG title");
 static const char *MAINMENUENTRY  = trNOOP("(De)Block broadcast");
 

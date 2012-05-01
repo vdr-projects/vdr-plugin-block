@@ -14,7 +14,12 @@ class cStatusBlock : public cStatus {
 private:
 
 protected:
+#if VDRVERSNUM < 10726
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
+#else
+  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView);
+#endif  
+
   virtual void Replaying(const cControl *Control,
                          const char *Name,
                          const char *FileName, bool On);
