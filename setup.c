@@ -48,7 +48,7 @@ void cMenuSetupBlock::Set(void) {
   Add(methoditem);
   Add(okitem);
   Add(whitelistitem);
-  if (VDRVERSNUM < 10711)  Add(dvbratingitem);
+  if (VDRVERSNUM > 10711)  Add(dvbratingitem);
 //TODO translation, setup menü einrichten ->define mit if versehen für ein/ausblenden von options? variablen deklarieren  
   item = new cOsdItem("");
   item->SetSelectable(false);
